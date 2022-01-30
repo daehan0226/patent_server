@@ -31,15 +31,16 @@
 
 ## Endpoints
 ### /patents
-<details>
+<details open>
 <summary>Fetch patents</summary>
 
 | | |
 | :--- | :--- | 
 | URL	| /patents/ |
 | Method	| GET |
-| Query Params | ?size=size&page=page&adStartDate=adStartDate&adEndDate=adEndDate&gdStartDate=gdStartDate&gdEndDate=gdEndDate& |
+| Query Params | ?size=size&page=page&adStartDate=adStartDate&adEndDate=adEndDate&gdStartDate=gdStartDate&gdEndDate=gdEndDate&title=title&desc=desc&claim&claim |
 | Success Response	| Code: 200 {"result":[{"pid": 11341, "title": "patent title"}, ...}], "message": "Success"}
 | Error Response	| Code: 500 {"Message": "Oops, something went wrong"}
-| Sample Request	| axios.get('/patents/?size=5&page=1&adStartDate=20190101&adEndDate=20190101&gdStartDate=20210101&gdEndDate=20211231') |
+| Sample Request	| axios.get('/patents/?size=5&page=1&adStartDate=20190101&adEndDate=20190101&gdStartDate=20210101&gdEndDate=20211231&title=자동차&desc=문&claim&자동차문') |
+|Etc| ad: application date(출원일), gd: granted date(등록일)|
 </details>
