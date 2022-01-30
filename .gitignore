@@ -1,0 +1,5 @@
+# Client # dependencies/production
+server/node_modules
+
+# nginx log
+proxy/log/*
