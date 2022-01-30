@@ -1,6 +1,18 @@
 # Patent api
 ### Nginx + Express + MongoDB
 
+## API 개발
+1. README.md 기능, API 명세 작성
+2. 테스트 코드 추가
+3. 테스트 코드를 통과하는 코드 작성
+4. 리팩토링
+
+## Features
+1. 특허 검색
+   1. 조건 : 출원 날짜 기간, 등록 날짜 기간
+   2. 검색 분류 : 명칭, 요악, 청구항에서 검색 가능
+   3. 사이즈&페이지 단위의 검색 결과 반환
+
 ## Status Codes
 *   API returns the following status codes:
 
@@ -19,64 +31,15 @@
 
 ## Endpoints
 ### /patents
-<!-- <details>
-<summary>Fetch actions</summary>
+<details>
+<summary>Fetch patents</summary>
 
 | | |
 | :--- | :--- | 
-| URL	| /actions/ |
+| URL	| /patents/ |
 | Method	| GET |
-| Success Response	| Code: 200 {"result":[{"id": 1, "name": "play"}, ...}], "message": "Success"}
+| Query Params | ?size=size&page=page&adStartDate=adStartDate&adEndDate=adEndDate&gdStartDate=gdStartDate&gdEndDate=gdEndDate& |
+| Success Response	| Code: 200 {"result":[{"pid": 11341, "title": "patent title"}, ...}], "message": "Success"}
 | Error Response	| Code: 500 {"Message": "Oops, something went wrong"}
-| Sample Request	| axios.get('/actions/') |
+| Sample Request	| axios.get('/patents/?size=5&page=1&adStartDate=20190101&adEndDate=20190101&gdStartDate=20210101&gdEndDate=20211231') |
 </details>
-<details>
-<summary>Create an action</summary>
-
-| | |
-| :--- | :--- | 
-| URL	| /actions/ |
-| Query Params | ?name=action-name |
-| Method	| POST |
-| Success Response	| Code: 201 {"result":action_id, "message": "Created"}
-| Error Response	| Code: 400 {"Message": "Dupilicate action name"} <br> Code: 401 {"message": "Please login first"} <br> Code: 403  {"message": "No permission"} <br> Code: 500  {"Message": "Oops, something went wrong"}
-| Sample Request	| axios.post('/actions/?name=action name') |
-</details>
-<details>
-<summary>Fetch an action</summary>
-
-| | |
-| :--- | :--- | 
-| URL	| /actions/<strong>int:action_id</strong> |
-| URL Parameters |	Required: <strong>action_id=[integer]</strong>|
-| Method	| GET |
-| Success Response	| Code: 200 {"message": "Success", "result": {id: action_id, name: action_name}} 
-| Error Response	| Code: 404 {"message": "Couldn't find what you want"} <br> Code: 500 {"message": "Oops, something went wrong"}
-| Sample Request	| axios.get(/actions/1) |
-</details>
-<details>
-<summary>Delete an action</summary>
-
-| | |
-| :--- | :--- | 
-| URL	| /actions/<strong>int:action_id</strong> |
-| URL Parameters |	Required: <strong>action_id=[integer]</strong>|
-| Method	| DELETE |
-| Success Response	| Code: 204 {"message": "Request has succeeded"}
-| Error Response	| Code: 401 {"message": "Please login first"} <br> Code: 403  {"message": "No permission"} <br> Code: 404 {"message": "Couldn't find what you want"} <br> Code: 500  {"message": "Oops, something went wrong"}
-| Sample Request	| axios.delete(/actions/1) |
-</details>
-<details>
-<summary>Update an action</summary>
-
-| | |
-| :--- | :--- | 
-| URL	| /actions/<strong>int:action_id</strong> |
-| URL Parameters |	Required: <strong>action_id=[integer]</strong> |
-| Query Params | ?name=action-name |
-| Method	| PUT |
-| Success Response	| Code: 204 {"message": "Request has succeeded"}
-| Error Response	| Code: 401  {"message": "Please login first"} <br> Code: 403 {"message": "No permission"} <br> Code: 404  {"message": "Couldn't find what you want"} <br> Code: 500 {"message": "Oops, something went wrong"}
-| Sample Request	| axios.put('/actions/?name=new-action-name')  |
-</details> -->
-
