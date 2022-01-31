@@ -38,9 +38,10 @@
 | :--- | :--- | 
 | URL	| /patents/ |
 | Method	| GET |
-| Query Params | ?size=size&page=page&adStartDate=adStartDate&adEndDate=adEndDate&gdStartDate=gdStartDate&gdEndDate=gdEndDate&title=title&desc=desc&claim&claim |
+| Query Params | size=size&page=page&adStartDate=adStartDate&adEndDate=adEndDate&gdStartDate=gdStartDate&gdEndDate=gdEndDate&title=title&desc=desc&claim&claim |
 | Success Response	| Code: 200 {"result":[{"pid": 11341, "title": "patent title"}, ...}], "message": "Success"}
-| Error Response	| Code: 500 {"Message": "Oops, something went wrong"}
+| Error Response	| Code: 400 {"Message": "Param wrong type"} <br /> Code: 400 {"Message": "Param wrong date format"} <br/> Code: 500 {"Message": "Oops, something went wrong"}
 | Sample Request	| axios.get('/patents/?size=5&page=1&adStartDate=20190101&adEndDate=20190101&gdStartDate=20210101&gdEndDate=20211231&title=자동차&desc=문&claim&자동차문') |
+|Type| number: size, page <br/> string: title, desc, claim <br/> string(year-month-day): adStartDate, adEndDate, gdStartDate, gdEndDate |
 |Etc| ad: application date(출원일), gd: granted date(등록일)|
 </details>
