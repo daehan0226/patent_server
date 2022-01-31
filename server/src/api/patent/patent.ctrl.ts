@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
-import moment from 'moment';
-import {validateStrDate} from '../../utils/validators';
+import {genMomentDate} from '../../utils/dateHelpers';
 
 let patents = [...new Array(100)].map(()=> {
     return {"title": "a"}});
 
 const defaultSizeStr = "10";
 const defaultPageStr = "1";
-const dateFormat = "YYYYMMDD"
+const defaultAdStartDate = "20210101";
+const defaultAdEndDate = "20211231";
+const defaultGdStartDate = "20210101";
+const defaultGdEndDate = "20211231";
 
 interface Params {
     size: string;
@@ -27,37 +29,11 @@ const index = function (req:Request<{},{},{},Params>, res: Response, next: Funct
     if (Number.isNaN(size) || Number.isNaN(page)) {
         res.status(400).end()
     }
-    
-    let adStartDate;   
-    let adEndDate;
-    let gdStartDate;
-    let gdEndDate;
 
-    if (req.query.adStartDate) {
-        adStartDate = validateStrDate(req.query.adStartDate, dateFormat)
-        if (!adStartDate) {
-            res.status(400).end()
-        }
-    }
-
-    if (req.query.adEndDate) {
-        adEndDate = validateStrDate(req.query.adEndDate, dateFormat);
-        if (!adEndDate) {
-            res.status(400).end()
-        }
-    }
-    if (req.query.gdStartDate) {
-        gdStartDate = validateStrDate(req.query.gdStartDate, dateFormat);
-        if (!gdStartDate) {
-            res.status(400).end()
-        }
-    }
-    if (req.query.gdEndDate) {
-        gdEndDate = validateStrDate(req.query.gdEndDate, dateFormat);
-        if (!gdEndDate) {
-            res.status(400).end()
-        }
-    }
+    const adStartDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultAdStartDate})
+    const adEndDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultAdEndDate});
+    const gdStartDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultGdStartDate});
+    const gdEndDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultGdEndDate});
 
     res.status(200).json(patents.slice(0,size));
 };

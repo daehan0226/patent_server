@@ -30,24 +30,4 @@ describe('Get /patents wrong params', ()=> {
         const res = await request(app).get('/patents?page=page');
         expect(res.status).toBe(400);
     });
-    
-    it('return 400 for wrong adStartDate', async ()=> {
-        const res = await request(app).get('/patents?adStartDate=2022.12.21');
-        expect(res.status).toBe(400);
-    });
-    
-    it('return 400 for wrong adEndDate', async ()=> {
-        const res = await request(app).get('/patents?adEndDate=2022.12.21');
-        expect(res.status).toBe(400);
-    });
-    
-    it('return 400 for wrong gdStartDate', async ()=> {
-        const res = await request(app).get('/patents?gdStartDate=2022.12.21');
-        expect(res.status).toBe(400);
-    });
-    
-    it('return 400 for wrong gdEndDate', async ()=> {
-        const res = await request(app).get('/patents?gdEndDate=2022.12.21');
-        expect(res.status).toBe(400);
-    });
 })
