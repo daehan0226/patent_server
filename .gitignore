@@ -1,6 +1,7 @@
 # Client # dependencies/production
 server/node_modules
 server/dist/*
+server/coverage/*
 
 # nginx log
 proxy/log/*
