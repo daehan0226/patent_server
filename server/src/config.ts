@@ -14,7 +14,7 @@ switch(process.env.NODE_ENV) {
         break
     case "production":
         configDotenv({
-            path: resolve(__dirname, "../.env")
+            path: resolve(__dirname, "../.env.production")
         })
         break
     default:

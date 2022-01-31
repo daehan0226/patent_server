@@ -9,7 +9,7 @@
     "build-dev": "copy .env.development dist && tsc -p ./",
     "test": "set NODE_ENV=test&& jest --forceExit --detectOpenHandles",
     "start": "NODE_ENV=production node dist/src/server.js",
-    "build": "tsc -p ./ && cp .env ./dist/.env"
+    "build": "tsc -p ./ && cp .env.production ./dist/.env.production"
   },
   "author": "",
   "license": "ISC",
