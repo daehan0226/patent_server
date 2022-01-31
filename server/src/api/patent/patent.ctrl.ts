@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import moment from 'moment';
+import {validateStrDate} from '../../utils/validators';
 
 let patents = [...new Array(100)].map(()=> {
     return {"title": "a"}});
 
 const defaultSizeStr = "10";
 const defaultPageStr = "1";
+const dateFormat = "YYYYMMDD"
 
 interface Params {
     size: string;
@@ -32,28 +34,27 @@ const index = function (req:Request<{},{},{},Params>, res: Response, next: Funct
     let gdEndDate;
 
     if (req.query.adStartDate) {
-        adStartDate = moment(req.query.adStartDate, 'YYYYMMDD', true);
-        console.log("? : ", adStartDate)
-        if (!adStartDate.isValid()) {
+        adStartDate = validateStrDate(req.query.adStartDate, dateFormat)
+        if (!adStartDate) {
             res.status(400).end()
         }
     }
 
     if (req.query.adEndDate) {
-        adEndDate = moment(req.query.adEndDate, 'YYYYMMDD', true);
-        if (!adEndDate.isValid()) {
+        adEndDate = validateStrDate(req.query.adEndDate, dateFormat);
+        if (!adEndDate) {
             res.status(400).end()
         }
     }
     if (req.query.gdStartDate) {
-        gdStartDate = moment(req.query.gdStartDate, 'YYYYMMDD', true);
-        if (!gdStartDate.isValid()) {
+        gdStartDate = validateStrDate(req.query.gdStartDate, dateFormat);
+        if (!gdStartDate) {
             res.status(400).end()
         }
     }
     if (req.query.gdEndDate) {
-        gdEndDate = moment(req.query.gdEndDate, 'YYYYMMDD', true);
-        if (!gdEndDate.isValid()) {
+        gdEndDate = validateStrDate(req.query.gdEndDate, dateFormat);
+        if (!gdEndDate) {
             res.status(400).end()
         }
     }
