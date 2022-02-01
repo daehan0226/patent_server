@@ -5,7 +5,7 @@ server/coverage/*
 server/.env.production
 server/.env.development
 server/.env.test
-server/jest/*
+server/jest/setEnvVars.ts
 
 # nginx log
 proxy/log/*
