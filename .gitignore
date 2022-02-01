@@ -1,6 +1,11 @@
 # Client # dependencies/production
 server/node_modules
 server/dist/*
+server/coverage/*
+server/.env.production
+server/.env.development
+server/.env.test
+server/jest/setEnvVars.ts
 
 # nginx log
 proxy/log/*
