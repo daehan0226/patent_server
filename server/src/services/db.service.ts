@@ -1,4 +1,5 @@
 
+import { Moment } from 'moment';
 import { MongoClient, ObjectId } from 'mongodb';
 import db from "../configs/db.config";
 
@@ -25,9 +26,14 @@ export default class MongoSingleton {
     }
 
     
-    find = async (size:number) => {
+    find = async (size:number, dates: {[key:string]: Moment, }) => {
         try {
-            const query = {};
+            const query = {
+                application_date:
+                    {$gte:dates.adStartDate ,$lt:dates.adEndDate},
+                patent_date:
+                    {$gte:dates.gdStartDate,$lt:dates.gdEndDate}
+            }
             const client = await MongoSingleton.getClient()
             let collection = client.db(database).collection(this.collection);
             return await collection.find(query);

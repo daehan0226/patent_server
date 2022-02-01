@@ -34,7 +34,7 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
     const gdEndDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultGdEndDate});
     
     const patentDb = new MongoSingleton(conllection)
-    const result = await patentDb.find(size)
+    const result = await patentDb.find(size ,{adStartDate, adEndDate, gdStartDate, gdEndDate})
     return res.status(200).json(result).end();
 };
 
