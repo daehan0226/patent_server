@@ -2,7 +2,7 @@ import {agent as request} from 'supertest';
 import app from "../../app"
 
 describe('Get /patents', ()=> {
-    it('상태 코드 200을 반환한다.', async ()=> {
+    it('return 200', async ()=> {
         const res = await request(app).get('/patents');
         expect(res.status).toBe(200);
     });
@@ -20,14 +20,27 @@ describe('Get /patents', ()=> {
 })
 
 
-describe('Get /patents wrong params', ()=> {
-    it('return 400 for wrong size type', async ()=> {
-        const res = await request(app).get('/patents?size=size');
-        expect(res.status).toBe(400);
+describe('Get /patents/_id', ()=> {
+    it.only('return patent by _id value', async ()=> {
+        const _id = "61e95f1c1c9de498fdab2998"
+        const res = await request(app).get(`/patents/${_id}`);
+        expect(res.body).toHaveProperty("_id", _id);
     });
-    
-    it('return 400 for wrong page type', async ()=> {
-        const res = await request(app).get('/patents?page=page');
+    it('retturn 404 for not found', async ()=> {
+        const res = await request(app).get(`/patents/fakeidstring`);
         expect(res.status).toBe(400);
     });
 })
+
+
+// describe('Get /patents wrong params', ()=> {
+//     it('return 400 for wrong size type', async ()=> {
+//         const res = await request(app).get('/patents?size=size');
+//         expect(res.status).toBe(400);
+//     });
+    
+//     it('return 400 for wrong page type', async ()=> {
+//         const res = await request(app).get('/patents?page=page');
+//         expect(res.status).toBe(400);
+//     });
+// })
