@@ -1,20 +1,16 @@
 import { Request, Response } from 'express';
 import MongoSingleton from '../../services/db.service';
-import {genMomentDate} from '../../utils/dateHelpers';
+import {genDate} from '../../utils/dateHelpers';
 
 const conllection = "patent";
 const defaultSizeStr = "10";
 const defaultPageStr = "1";
-const defaultAdStartDate = "20210101";
-const defaultAdEndDate = "20211231";
 const defaultGdStartDate = "20210101";
-const defaultGdEndDate = "20211231";
+const defaultGdEndDate = "20210110";
 
 interface IGetAllQuery {
     size: string;
     page: string;
-    adStartDate: string;   
-    adEndDate: string;
     gdStartDate: string;
     gdEndDate: string;
 }
@@ -28,13 +24,11 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
     if (Number.isNaN(size) || Number.isNaN(page)) {
         return res.status(400).end()
     }
-    const adStartDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultAdStartDate})
-    const adEndDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultAdEndDate});
-    const gdStartDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultGdStartDate});
-    const gdEndDate = genMomentDate({strDate:req.query.adStartDate, defaultDate: defaultGdEndDate});
+    const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
+    const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
     
     const patentDb = new MongoSingleton(conllection)
-    const result = await patentDb.find(size ,{adStartDate, adEndDate, gdStartDate, gdEndDate})
+    const result = await patentDb.find(size ,{gdStartDate, gdEndDate})
     return res.status(200).json(result).end();
 };
 

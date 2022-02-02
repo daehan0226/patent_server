@@ -26,17 +26,22 @@ export default class MongoSingleton {
     }
 
     
-    find = async (size:number, dates: {[key:string]: Moment, }) => {
+    find = async (size:number, dates: {[key:string]: Date, }) => {
         try {
             const query = {
-                application_date:
-                    {$gte:dates.adStartDate ,$lt:dates.adEndDate},
-                patent_date:
-                    {$gte:dates.gdStartDate,$lt:dates.gdEndDate}
+                "patent_date":
+                    {
+                        "$gte": dates.gdStartDate,
+                        "$lt": dates.gdEndDate
+                    }
             }
             const client = await MongoSingleton.getClient()
             let collection = client.db(database).collection(this.collection);
-            return await collection.find(query);
+            let result: any = []
+            for await (let doc of collection.find(query).limit(size)) {
+                result.push(doc)
+            }
+            return result
         } catch (e) {
             return e;
         }

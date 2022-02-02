@@ -7,11 +7,6 @@ switch(process.env.NODE_ENV) {
         path: resolve(__dirname, "../.env.development")
         })
         break
-    case "test":
-        configDotenv({
-            path: resolve(__dirname, "../.env.test")
-        })
-        break
     case "production":
         configDotenv({
             path: resolve(__dirname, "../.env.production")

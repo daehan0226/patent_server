@@ -1,24 +1,24 @@
 import moment from "moment";
 
-interface genMomentDateProps {
+interface genDateProps {
   strDate: string;
   defaultDate: string;
   format?: string;
 }
 
-const genMomentDate = ({
+const genDate = ({
   strDate,
   defaultDate,
   format="YYYYMMDD",
-}:genMomentDateProps
-): moment.Moment => {
-  let result;
-  try {
-    result = moment(strDate, format, true);
-  } catch {
-    result = moment(defaultDate, format, true);
+}:genDateProps
+): Date => {
+  if (strDate) {
+    const date = moment(strDate, format, true)
+    if (date.isValid()) {
+      return date.toDate();
+    } 
   }
-  return result;
+  return moment(defaultDate, format, true).toDate();
 };
 
-export { genMomentDate };
+export { genDate };
