@@ -1,4 +1,5 @@
 
+import { Moment } from 'moment';
 import { MongoClient, ObjectId } from 'mongodb';
 import db from "../configs/db.config";
 
@@ -25,12 +26,23 @@ export default class MongoSingleton {
     }
 
     
-    find = async (size:number) => {
+    find = async (size:number, page:number, dates: {[key:string]: Date, }) => {
         try {
-            const query = {};
+            const query = {
+                "patent_date":
+                    {
+                        "$gte": dates.gdStartDate,
+                        "$lt": dates.gdEndDate
+                    }
+            }
+            const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
             const client = await MongoSingleton.getClient()
             let collection = client.db(database).collection(this.collection);
-            return await collection.find(query);
+            let result: any = []
+            for await (let doc of collection.find(query).skip(skipNumber).limit(size)) {
+                result.push(doc)
+            }
+            return result
         } catch (e) {
             return e;
         }
