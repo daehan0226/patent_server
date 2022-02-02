@@ -39,11 +39,11 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
     return res.status(StatusCodes.OK).json(result)
 };
 
-interface IGetOneParams {
+interface IPatentId {
     _id: string;
 }
 
-const getById = async function (req:Request<IGetOneParams,{},{},{}>, res: Response, next: Function) {
+const getById = async function (req:Request<IPatentId,{},{},{}>, res: Response, next: Function) {
     const patentDb = new MongoSingleton(conllection)
     const result = await patentDb.findById(req.params._id)
     if (result) {
