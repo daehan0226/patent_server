@@ -40,6 +40,6 @@ describe('Get /patents/_id', ()=> {
     });
     it('retturn 404 for not found', async ()=> {
         const res = await request(app).get(`/patents/fakeidstring`);
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(404);
     });
 })
