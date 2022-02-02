@@ -26,7 +26,7 @@ export default class MongoSingleton {
     }
 
     
-    find = async (size:number, dates: {[key:string]: Date, }) => {
+    find = async (size:number, page:number, dates: {[key:string]: Date, }) => {
         try {
             const query = {
                 "patent_date":
@@ -35,10 +35,11 @@ export default class MongoSingleton {
                         "$lt": dates.gdEndDate
                     }
             }
+            const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
             const client = await MongoSingleton.getClient()
             let collection = client.db(database).collection(this.collection);
             let result: any = []
-            for await (let doc of collection.find(query).limit(size)) {
+            for await (let doc of collection.find(query).skip(skipNumber).limit(size)) {
                 result.push(doc)
             }
             return result
