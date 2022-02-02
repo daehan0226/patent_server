@@ -12,6 +12,18 @@ describe('Get /patents', ()=> {
         const res = await request(app).get(`/patents?size=${size}`);
         expect(res.body).toHaveLength(size);
     });
+    
+    it('return 400 for wrong size type', async ()=> {
+        const size = 'as'
+        const res = await request(app).get(`/patents?size=${size}`);
+        expect(res.status).toBe(400);
+    });
+
+    it('return 400 for wrong page type', async ()=> {
+        const page = 'sd'
+        const res = await request(app).get(`/patents?page=${page}`);
+        expect(res.status).toBe(400);
+    });
 
     it('return default size number of patents when size is not provided', async ()=> {
         const res = await request(app).get(`/patents`);
