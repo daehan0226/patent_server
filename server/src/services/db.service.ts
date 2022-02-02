@@ -1,5 +1,3 @@
-
-import { Moment } from 'moment';
 import { MongoClient, ObjectId } from 'mongodb';
 import db from "../configs/db.config";
 
@@ -38,7 +36,7 @@ export default class MongoSingleton {
             const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
             const client = await MongoSingleton.getClient()
             let collection = client.db(database).collection(this.collection);
-            let result: any = []
+            let result: any[] = []
             for await (let doc of collection.find(query).skip(skipNumber).limit(size)) {
                 result.push(doc)
             }
