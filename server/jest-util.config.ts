@@ -8,5 +8,5 @@ export default {
     testMatch: ['<rootDir>/src/utils/*.test.ts'],
     transform: {
         "^.+\\.(ts|tsx)$": "ts-jest",
-    },
+    }
 };
