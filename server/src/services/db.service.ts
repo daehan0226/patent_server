@@ -1,4 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import db from "../configs/db.config";
 
 interface Idates {
@@ -21,9 +22,14 @@ export default class MongoSingleton {
 
     static async getClient(): Promise<MongoClient> {
         if (this.isInitialized()) return this.mongoClient;
-        
-        if (db.url) {
+
+        if (process.env.NODE_ENV === "test") {
+            const mongoServer =  await MongoMemoryServer.create()
+            this.mongoClient = await MongoClient.connect(mongoServer.getUri())
+        } else if (db.url) {
             this.mongoClient = await MongoClient.connect(db.url);
+        } else {
+            new Error('db connect error')
         }
         return this.mongoClient;
     }
@@ -41,8 +47,8 @@ export default class MongoSingleton {
                 "patent_date": this.genDateQuery(dates.gdStartDate, dates.gdEndDate)
             }
             const client = await MongoSingleton.getClient()
-            let collection = client.db(this.db).collection(this.collection);
-            let result: any[] = []
+            const collection = client.db(this.db).collection(this.collection);
+            const result: any[] = []
             for await (let doc of collection.aggregate([{$match: query},{$sample: {size}}])) {
                 result.push(doc)
             }
@@ -59,8 +65,8 @@ export default class MongoSingleton {
             }
             const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
             const client = await MongoSingleton.getClient()
-            let collection = client.db(this.db).collection(this.collection);
-            let result: any[] = []
+            const collection = client.db(this.db).collection(this.collection);
+            const result: any[] = []
             for await (let doc of collection.find(query).skip(skipNumber).limit(size)) {
                 result.push(doc)
             }
@@ -73,9 +79,21 @@ export default class MongoSingleton {
     public async findById(_id:string) {
         try {
             const client = await MongoSingleton.getClient()
-            let collection = client.db(this.db).collection(this.collection);
+            const collection = client.db(this.db).collection(this.collection);
             return await collection.findOne({"_id": new ObjectId(_id)});
         } catch (e) {
+            return null;
+        }
+    }
+    
+    public async insertMany(data:any) {
+        try {
+            const client = await MongoSingleton.getClient()
+            const collection = client.db(this.db).collection(this.collection);
+            const result = await collection.insertMany(data);
+            return result
+        } catch (e) {
+            console.log(e)
             return null;
         }
     }
