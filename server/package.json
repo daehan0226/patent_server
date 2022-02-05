@@ -7,7 +7,6 @@
     "dev": "set NODE_ENV=development&& nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/server.ts",
     "start-dev": "set NODE_ENV=development&& node dist/src/server.js",
     "build-dev": "copy .env.development dist && tsc -p ./",
-    "test-utils": "jest --config ./jest-util.config.ts",
     "jest-clear": "jest --clearCache",
     "test": "jest --detectOpenHandles --watchAll --coverage",
     "start": "node dist/src/server.js",
