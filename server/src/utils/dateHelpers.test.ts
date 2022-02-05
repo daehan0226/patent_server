@@ -1,3 +1,4 @@
+import '@types/jest';
 import {genDate} from "./dateHelpers";
 
 describe('convertMomentDate function', ()=> {

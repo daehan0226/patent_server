@@ -1,3 +1,4 @@
+import '@types/jest';
 import {convertInt} from "./numberHelpers";
 
 describe('convert given value to number type', ()=> {
