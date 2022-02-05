@@ -8,8 +8,8 @@
     "start-dev": "set NODE_ENV=development&& node dist/src/server.js",
     "build-dev": "copy .env.development dist && tsc -p ./",
     "jest-clear": "jest --clearCache",
-    "test": "jest --coverage",
-    "jest": "jest --detectOpenHandles --watchAll --coverage",
+    "test": "jest --detectOpenHandles --forceExit --coverage",
+    "test-w": "jest --detectOpenHandles --watchAll --coverage",
     "start": "node dist/src/server.js",
     "build": "tsc -p ./ && cp .env.production ./dist/.env.production"
   },
