@@ -54,7 +54,8 @@ export default class MongoSingleton {
             }
             return result
         } catch (e) {
-            return e;
+            console.log(e)
+            return [];
         }
     }
     
@@ -72,7 +73,8 @@ export default class MongoSingleton {
             }
             return result
         } catch (e) {
-            return e;
+            console.log(e)
+            return [];
         }
     }
 
