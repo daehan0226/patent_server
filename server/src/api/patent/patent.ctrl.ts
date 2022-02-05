@@ -11,8 +11,8 @@ const db = process.env.DB_NAME|| "patent_test";
 const conllection = process.env.DB_COLLECTION || "patent";
 const defaultSize = 10;
 const defaultPage = 1;
-const defaultGdStartDate = "20210201";
-const defaultGdEndDate = "20210210";
+const defaultGdStartDate = "20210101";
+const defaultGdEndDate = "20211231";
 
 interface IGetAllQuery {
     size: string;
