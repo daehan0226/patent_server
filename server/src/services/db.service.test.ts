@@ -1,4 +1,4 @@
-import '@types/jest';
+import 'jest';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server'; // https://github.com/nodkz/mongodb-memory-server
 
