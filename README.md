@@ -48,6 +48,7 @@
 </details>
 
 
+### /patents/random
 <details>
 <summary>Fetch random patents</summary>
 
