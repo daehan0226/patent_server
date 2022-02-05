@@ -1,4 +1,3 @@
-import 'jest';
 import {agent as request} from 'supertest';
 import moment from "moment";
 import app from "../../app"
