@@ -66,4 +66,21 @@ describe('test endpoints after insert dummy patetns', ()=> {
             expect(res.status).toBe(200);
         });
     })
+
+    
+    describe('Get /patents?title', ()=> {
+        it('return 400 for long string value(over 200)', async ()=> {
+            const title = Array(201).join("a")
+            const res = await request(app).get(`/patents?title=${title}`);
+            expect(res.status).toBe(400);
+        });
+    })
+    
+    describe('Get /patents?abstract', ()=> {
+        it('return 400 for long string value(over 200)', async ()=> {
+            const abstract = Array(201).join("a")
+            const res = await request(app).get(`/patents?abstract=${abstract}`);
+            expect(res.status).toBe(400);
+        });
+    })
 })
