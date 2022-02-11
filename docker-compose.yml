@@ -3,17 +3,34 @@ services:
   proxy:
     build:
       context: ./proxy
-    container_name: proxy
+    container_name: "${PROXY}"
     ports:
-      - "16610:80"
+      - "${PROXY_PORT}:80"
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf
       - ./proxy/log:/var/log/nginx
     restart: "unless-stopped"
+    depends_on:
+      - express
+
   express:
     build:
       context: ./server
-    container_name: express
+    container_name: "${EXPRESS}"
     expose:
-      - "16620"
+      - "${EXPRESS_PORT}"
     restart: "unless-stopped"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    restart: always
+    container_name: "${MONGO}"
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - ./mongo/db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_PASSWORD}"

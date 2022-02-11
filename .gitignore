@@ -9,3 +9,9 @@ server/jest/setEnvVars.ts
 
 # nginx log
 proxy/log/*
+
+
+.env
+
+mongo/db/*
+mongo/backup/*

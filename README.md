@@ -1,7 +1,7 @@
 # Patent api
 ### Nginx + Express + MongoDB + MongoDB In-Memory Server(for Test-with Jest)
 
-## API 개발
+## API
 1. README.md 기능, API 명세 작성
 2. 테스트 코드 추가
 3. 테스트 코드를 통과하는 코드 작성
@@ -13,7 +13,7 @@
    2. 사이즈&페이지 단위의 검색 결과 반환
    3. 랜덤 특허(특허 수, 날짜 파라미터)
 
-## 추가할 기능 목록
+## Features to add
 1. 검색 기능 다양화 명칭, 요악, 청구항에서 검색 가능
 2. MySQL ORM 연동 - Docker-compose에 추가
    1. 유저 정보, 관심 특허 분야/ 관심 특허 저장
