@@ -8,9 +8,7 @@ switch(process.env.NODE_ENV) {
         })
         break
     case "production":
-        configDotenv({
-            path: resolve(__dirname, "../.env.production")
-        })
+        // env passed when a docker container is created
         break
     default:
         throw new Error(`'NODE_ENV' ${process.env.NODE_ENV} is not handled!`)

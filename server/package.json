@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "set NODE_ENV=development&& nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/server.ts",
     "start-dev": "set NODE_ENV=development&& node dist/src/server.js",
-    "build-dev": "copy .env.development dist && tsc -p ./",
+    "build-dev": "copy ../../.env dist && tsc -p ./",
     "jest-clear": "jest --clearCache",
     "test": "jest --detectOpenHandles --forceExit --coverage",
     "test-w": "jest --detectOpenHandles --watchAll --coverage",
     "start": "node dist/src/server.js",
-    "build": "tsc -p ./ && cp .env.production ./dist/.env.production"
+    "build": "tsc -p ./"
   },
   "author": "",
   "license": "ISC",
