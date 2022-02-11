@@ -12,3 +12,5 @@ proxy/log/*
 
 
 .env
+
+mongo/db
