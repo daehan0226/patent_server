@@ -2,7 +2,7 @@
 import './config'
 import app from "./app"
 
-const port = process.env.APP_PORT;
+const port = process.env.EXPRESS_PORT;
 
 app.listen(port, () => {
    console.log(`Server is running on ${port} port`);
