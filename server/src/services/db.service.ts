@@ -41,6 +41,22 @@ export default class MongoSingleton {
             }
     }
 
+    private genTextFullSearchQuery(text:string) {
+        return { $text: { $search: text } }
+    }
+
+    
+    private genTextSearchQuery(title:string, desc: string) {
+        const result = [];
+        if (title) {
+            result.push({"title":new RegExp(title, "gi")})
+        }
+        if (desc) {
+            result.push({"abstract":new RegExp(title, "gi")})
+        }
+        return result
+    }
+
     public async getRandom(size:number, dates: {[key:string]: Date, }) {
         try {
             const query = {
@@ -59,10 +75,13 @@ export default class MongoSingleton {
         }
     }
     
-    public async find(size:number, page:number, dates: {[key:string]: Date, }) {
+    public async find(size:number, page:number, dates: {[key:string]: Date, }, title: string, desc: string) {
         try {
-            const query = {
-                "patent_date": this.genDateQuery(dates.gdStartDate, dates.gdEndDate)
+            const query: any = {}
+            query.patent_date = this.genDateQuery(dates.gdStartDate, dates.gdEndDate)
+            
+            if (title || desc) {
+                query.$or = this.genTextSearchQuery(title, desc)
             }
             const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
             const client = await MongoSingleton.getClient()

@@ -7,19 +7,28 @@ import {
 	StatusCodes,
 } from 'http-status-codes';
 
-const db = process.env.DB_NAME|| "patent_test";
+const db = process.env.DB_NAME|| "patent";
 const conllection = process.env.DB_COLLECTION || "patent";
 const defaultSize = 10;
 const defaultPage = 1;
 const defaultGdStartDate = "20210101";
 const defaultGdEndDate = "20211231";
 
-interface IGetAllQuery {
+interface ISearch {
+    title: string;
+    desc: string;
+}
+
+interface Ifilter {
     size: string;
     page: string;
     gdStartDate: string;
     gdEndDate: string;
 }
+
+interface IGetAllQuery extends ISearch, Ifilter {}
+interface IGetRandomQuery extends Ifilter {}
+
 
 const getById = async function (req:Request<{_id: string},{},{},{}>, res: Response) {
     const patentDb = new MongoSingleton(db, conllection)
@@ -35,13 +44,18 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
     const page = convertInt({value:req.query.page, defaultValue:defaultPage})
     const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
     const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
+    const title = req.query.title || ""
+    const desc = req.query.desc || ""
+    if (title.length >= 200 || desc.length >= 200) {
+        return res.status(StatusCodes.BAD_REQUEST).send({error: `Title or desc search query is too long.`});
+    }
     
     const patentDb = new MongoSingleton(db, conllection)
-    const result = await patentDb.find(size, page, {gdStartDate, gdEndDate})
+    const result = await patentDb.find(size, page, {gdStartDate, gdEndDate}, title, desc)
     return res.status(StatusCodes.OK).json(result)
 };
 
-const getRandom  = async function (req:Request<{},{},{},IGetAllQuery>, res: Response) {
+const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: Response) {
     const size = convertInt({value:req.query.size, defaultValue:defaultSize})
     const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
     const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
