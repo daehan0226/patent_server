@@ -13,4 +13,5 @@ proxy/log/*
 
 .env
 
-mongo/db
+mongo/db/*
+mongo/backup/*
