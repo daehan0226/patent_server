@@ -26,6 +26,7 @@ services:
       - ./.env
     depends_on:
       - mongo
+      - mysql
 
   mongo:
     image: mongo
@@ -39,3 +40,21 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_USERNAME}"
       MONGO_INITDB_ROOT_PASSWORD: "${MONGO_PASSWORD}"
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    container_name: "${MYSQL}"
+    ports:
+      - "${MYSQL_EXTERNAL_PORT}:${MYSQL_PORT}"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - TZ=Asia/Seoul
+    command:
+      - --lower_case_table_names=1
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./mysql/data:/var/lib/mysql
