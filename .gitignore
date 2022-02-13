@@ -4,8 +4,6 @@ server/dist/*
 server/coverage/*
 server/.env.production
 server/.env.development
-server/.env.test
-server/jest/setEnvVars.ts
 server/logs/*
 
 # nginx log

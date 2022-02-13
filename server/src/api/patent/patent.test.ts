@@ -3,9 +3,12 @@ import moment from "moment";
 import app from "../../app"
 import MongoSingleton from '../../services/db.service';
 
+const dbName = process.env.DB_NAME
+const collectionName = process.env.DB_COLLECTION
+
 describe('test endpoints after insert dummy patetns', ()=> {
     beforeAll(async () => {
-        const db = new MongoSingleton("patent_test", "patent")
+        const db = new MongoSingleton(dbName, collectionName)
         const tempOne = [ ...Array(8).keys() ].map( i => {return{ patent_date: moment(`20210${i+2}0${i+1}`).toDate()}})
         const tempSecond = [ ...Array(7).keys() ].map( i => {return{ patent_date: moment(`20210${i+3}0${i+2}`).toDate()}})
         const patents = [...tempOne, ...tempSecond]
@@ -24,7 +27,7 @@ describe('test endpoints after insert dummy patetns', ()=> {
             expect(res.body).toHaveLength(size);
         });
         
-        it('return default lenth for wrong size type', async ()=> {
+        it('return default length for wrong size type', async ()=> {
             const defaultSize= 10;
             const size = 'as'
             const res = await request(app).get(`/patents?size=${size}`);
@@ -46,7 +49,7 @@ describe('test endpoints after insert dummy patetns', ()=> {
     
     describe('Get /patents/_id', ()=> {
         it('return patent by _id value', async ()=> {
-            const db = new MongoSingleton("patent_test", "patent")
+            const db = new MongoSingleton(dbName, collectionName)
             const result = await db.insertMany([{"test":"Test"}])
             if (result) {
                 const _id = result.insertedIds[0].toString()
@@ -76,10 +79,10 @@ describe('test endpoints after insert dummy patetns', ()=> {
         });
     })
     
-    describe('Get /patents?abstract', ()=> {
+    describe('Get /patents?desc', ()=> {
         it('return 400 for long string value(over 200)', async ()=> {
-            const abstract = Array(201).join("a")
-            const res = await request(app).get(`/patents?abstract=${abstract}`);
+            const desc = Array(201).join("a")
+            const res = await request(app).get(`/patents?desc=${desc}`);
             expect(res.status).toBe(400);
         });
     })
