@@ -20,6 +20,8 @@ services:
     expose:
       - "${EXPRESS_PORT}"
     restart: "unless-stopped"
+    volumes:
+      - ./server/logs:/usr/src/app/logs
     env_file:
       - ./.env
     depends_on:
