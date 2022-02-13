@@ -1,6 +1,7 @@
 import {config as configDotenv} from 'dotenv'
 import {resolve} from 'path'
 
+
 switch(process.env.NODE_ENV) {
     case "development":
         configDotenv({

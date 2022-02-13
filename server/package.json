@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.16.7",
+    "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.3",
     "@types/split": "^1.0.0",
     "body-parser": "^1.19.1",

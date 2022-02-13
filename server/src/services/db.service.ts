@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import db from "../configs/db.config";
 
@@ -101,7 +101,7 @@ export default class MongoSingleton {
         try {
             const client = await MongoSingleton.getClient()
             const collection = client.db(this.db).collection(this.collection);
-            return await collection.findOne({"_id": new ObjectId(_id)});
+            return await collection.findOne({_id});
         } catch (e) {
             return null;
         }

@@ -1,4 +1,5 @@
-import { Schema, model, Model, Document } from 'mongoose';
+import mongoose, { Schema, Document, FilterQuery, model } from 'mongoose';
+import db from "../configs/db.config";
 
 interface IPatent extends Document {
     "title": string,
@@ -17,7 +18,8 @@ interface IPatent extends Document {
     "cpc"?: []
 }
 
-const PatentSchema: Schema = new Schema({
+const Patent = new Schema({
+    _id: {type: String, required: true},
     title: { type: String, required: true },
     abstract: { type: String, required: true },
     claim: { type: String, required: true },
@@ -33,8 +35,10 @@ const PatentSchema: Schema = new Schema({
     ipc: { type: String },
     cpc: { type: String },
 });
-const Patent = model('Patent', PatentSchema)
 
-export {
-    Patent, IPatent
-}
+Patent.index({ title: 'text', "abstract": 'text' });
+Patent.index({ title: 1 });
+Patent.index({ "abstract": 1 });
+Patent.index({ title: 1, "abstract": 1 });
+
+export default mongoose.model<IPatent>('Patent', Patent)

@@ -6,6 +6,7 @@ import {convertInt} from "../../utils/numberHelpers";
 import {
 	StatusCodes,
 } from 'http-status-codes';
+import Patent from '../../models/patent.model';
 
 
 const db = process.env.DB_NAME|| "patent";
@@ -33,8 +34,7 @@ interface IGetRandomQuery extends Ifilter {}
 
 const getById = async function (req:Request<{_id: string},{},{},{}>, res: Response, next: NextFunction) {
     try {
-        const patentDb = new MongoSingleton(db, conllection)
-        const result = await patentDb.findById(req.params._id)
+        const result = await Patent.findById(req.params._id)
         if (result) {
             return res.status(StatusCodes.OK).json(result);
         }
