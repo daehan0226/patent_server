@@ -1,13 +1,14 @@
 import * as dotenv from 'dotenv';
+
 dotenv.config()
 
-const env = process.env;
+const MONGO_DATABASE = process.env.MONGO_DATABASE || 'DB';
+const MONGO_COLLECTION = process.env.MONGO_COLLECTION || 'COLLECTION';
+const MONGODB_URL = process.env.MONGODB_URL || `URL`;
+
 const db = {
-    database: env.DB_NAME,
-    collection: env.DB_COLLECTION,
-    url: env.MONGODB_URL
+    database: MONGO_DATABASE,
+    collection: MONGO_COLLECTION,
+    url: MONGODB_URL
 };
-
-module.exports = db;
-
 export default db;
