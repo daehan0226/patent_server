@@ -22,11 +22,13 @@ app.use(setHeaders);
 app.use("/patents", patent);
 app.use(errorHandler);
 
-mongoose
-    .connect(db.url, {
-        dbName: db.database
-    })
-    .then(() => console.log('MongoDB Connected'))
-    .catch((err: Error) => console.log(err))
+if (process.env.NODE_ENV !== "test") {
+    mongoose
+        .connect(db.url, {
+            dbName: db.database
+        })
+        .then(() => console.log('MongoDB Connected'))
+        .catch((err: Error) => console.log(err))
+}
 
 export default app;

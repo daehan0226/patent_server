@@ -1,5 +1,4 @@
-import mongoose, { Schema, Document, FilterQuery, model } from 'mongoose';
-import db from "../configs/db.config";
+import mongoose, { Schema, Document } from 'mongoose';
 
 interface IPatent extends Document {
     "title": string,
@@ -41,4 +40,4 @@ Patent.index({ title: 1 });
 Patent.index({ "abstract": 1 });
 Patent.index({ title: 1, "abstract": 1 });
 
-export default mongoose.model<IPatent>('Patent', Patent)
+export default mongoose.model<IPatent>('Patent', Patent) // 'Patent -> collection name patents'

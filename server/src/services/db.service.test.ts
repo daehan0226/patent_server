@@ -1,5 +1,25 @@
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server'; // https://github.com/nodkz/mongodb-memory-server
+import mongoose from 'mongoose';
+
+let mongod: MongoMemoryServer;
+
+export const connect = async () => {
+  mongod = await MongoMemoryServer.create({
+    binary: {
+      version: '5.0.1',
+    },
+  });
+  const uri = mongod.getUri();
+
+  await mongoose.connect(uri, {autoIndex: true});
+};
+
+export const disconnect = async () => {
+  await mongoose.connection.close();
+  await mongod.stop();
+};
+
 
 describe('Single MongoMemoryServer', () => {
   let con: MongoClient;
