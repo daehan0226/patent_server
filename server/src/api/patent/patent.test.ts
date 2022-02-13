@@ -3,8 +3,8 @@ import moment from "moment";
 import app from "../../app"
 import MongoSingleton from '../../services/db.service';
 
-const dbName = process.env.DB_NAME
-const collectionName = process.env.DB_COLLECTION
+const dbName = process.env.DB_NAME || "patent"
+const collectionName = process.env.DB_COLLECTION || "patent"
 
 describe('test endpoints after insert dummy patetns', ()=> {
     beforeAll(async () => {

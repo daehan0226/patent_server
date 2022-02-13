@@ -7,7 +7,6 @@ import {
 	StatusCodes,
 } from 'http-status-codes';
 
-import Logger from '../../lib/logger';
 
 const db = process.env.DB_NAME|| "patent";
 const conllection = process.env.DB_COLLECTION || "patent";
