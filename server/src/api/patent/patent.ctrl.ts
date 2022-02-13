@@ -32,7 +32,7 @@ interface IGetAllQuery extends ISearch, Ifilter {}
 interface IGetRandomQuery extends Ifilter {}
 
 
-const getById = async function (req:Request<{_id: string},{},{},{}>, res: Response) {
+const getById = async function (req:Request<{_id: string},{},{},{}>, res: Response, next: NextFunction) {
     try {
         const patentDb = new MongoSingleton(db, conllection)
         const result = await patentDb.findById(req.params._id)
@@ -41,12 +41,11 @@ const getById = async function (req:Request<{_id: string},{},{},{}>, res: Respon
         }
         return res.status(StatusCodes.NOT_FOUND).send({error: `Patent(_id:'${req.params._id}') does not exist.`});
     } catch (e) {
-        Logger.error("/patent/<_id> : ", e)
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
+        next(e)
     }
 };
 
-const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response) {    
+const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response, next: NextFunction) {    
     try {
         const size = convertInt({value:req.query.size, defaultValue:defaultSize})
         const page = convertInt({value:req.query.page, defaultValue:defaultPage})
@@ -62,12 +61,11 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
         const result = await patentDb.find(size, page, {gdStartDate, gdEndDate}, title, desc)
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
-        Logger.error("/patent : ", e)
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
+        next(e)
     }
 };
 
-const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: Response) {
+const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: Response, next: NextFunction) {
     try {
         const size = convertInt({value:req.query.size, defaultValue:defaultSize})
         const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
@@ -77,8 +75,7 @@ const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: R
         const result = await patentDb.getRandom(size, {gdStartDate, gdEndDate})
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
-        Logger.error("/patent/random : ", e)
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
+        next(e)
     }
 };
 

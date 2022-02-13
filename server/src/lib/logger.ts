@@ -15,12 +15,6 @@ const levels = {
     debug: 4,
 }
 
-const level = () => {
-    const env = process.env.NODE_ENV || 'development'
-    const isDevelopment = env === 'development'
-    return isDevelopment ? 'debug' : 'warn'
-}
-
 const colors = {
     error: 'red',
     warn: 'yellow',
@@ -60,11 +54,12 @@ if (process.env.NODE_ENV !== 'development') {
     transports.push(dailyRotateFileInfoTransport)
     transports.push(dailyRotateFileErrorTransport)
 } else {
-    transports.push(new winston.transports.Console())
+    transports.push(new winston.transports.Console({
+      level: 'debug'
+    }))
 }
 
 const Logger = winston.createLogger({
-    level: level(),
     levels,
     format,
     transports
