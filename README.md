@@ -1,5 +1,5 @@
 # Patent api
-### Nginx + Express + MongoDB(Mongoose) + jest(MongoDB In-Memory Server) + Redis
+### Nginx + Express + MongoDB(Mongoose) + Redis + MySQL(추가 예정) + Jest(MongoDB In-Memory Server, Redis-Mock) 
 
 ## API
 1. README.md 기능, API 명세 작성
