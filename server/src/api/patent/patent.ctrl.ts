@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import MongoSingleton from '../../services/db.service';
 import {genDate} from '../../utils/dateHelpers';
 import {convertInt} from "../../utils/numberHelpers";
 
@@ -8,9 +7,6 @@ import {
 } from 'http-status-codes';
 import Patent from '../../models/patent.model';
 
-
-const db = process.env.DB_NAME|| "patent";
-const conllection = process.env.DB_COLLECTION || "patent";
 const defaultSize = 10;
 const defaultPage = 1;
 const defaultGdStartDate = "20210101";
@@ -46,18 +42,26 @@ const getById = async function (req:Request<{_id: string},{},{},{}>, res: Respon
 
 const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response, next: NextFunction) {    
     try {
-        const size = convertInt({value:req.query.size, defaultValue:defaultSize})
-        const page = convertInt({value:req.query.page, defaultValue:defaultPage})
-        const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
-        const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
         const title = req.query.title || ""
         const desc = req.query.desc || ""
         if (title.length >= 200 || desc.length >= 200) {
             return res.status(StatusCodes.BAD_REQUEST).send({error: `Title or desc search query is too long.`});
         }
-        
-        const patentDb = new MongoSingleton(db, conllection)
-        const result = await patentDb.find(size, page, {gdStartDate, gdEndDate}, title, desc)
+
+        const size = convertInt({value:req.query.size, defaultValue:defaultSize})
+        const page = convertInt({value:req.query.page, defaultValue:defaultPage})
+        const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
+        const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
+        const query: {title?:string, abstract?: string, patent_date: {"$gte": Date, "$lt": Date} } = {
+            "patent_date": {
+                "$gte": gdStartDate, 
+                "$lt": gdEndDate
+            }
+        }
+        if (title) query["title"] = title;
+        if (desc) query["abstract"] = desc;
+        const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
+        const result = await Patent.find(query).skip(skipNumber).limit(size)
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
         next(e)
@@ -66,14 +70,12 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
 
 const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: Response, next: NextFunction) {
     try {
-        const size = convertInt({value:req.query.size, defaultValue:defaultSize})
-        const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
-        const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
-        
-        const patentDb = new MongoSingleton(db, conllection)
-        const result = await patentDb.getRandom(size, {gdStartDate, gdEndDate})
+        const count = await Patent.countDocuments() // too slow
+        const randomCount = Math.floor(Math.random() * count)
+        const result = await Patent.findOne().skip(randomCount)
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
+        console.log(e)
         next(e)
     }
 };
