@@ -1,5 +1,5 @@
 # Patent api
-### Nginx + Express + MongoDB + MongoDB In-Memory Server(for Test-with Jest)
+### Nginx + Express + MongoDB(Mongoose) + jest(MongoDB In-Memory Server) + Redis
 
 ## API
 1. README.md 기능, API 명세 작성
@@ -15,15 +15,14 @@
    4. 검색 - 명칭, 요약
       1. 길이 제한
       2. AND/OR 조합 쿼리
+2. DB - 특허 데이터
+  1. Mongoose로 DB 데이터 조작
+  2. MongoDB - 특허 문서 인덱스 설정 - 출원번호는 유일한 값이자 모든 특허가 가지고 있고, 검색시 가장 많이 사용되는 필드이므로 아이디 값으로 설정하고, 명칭(title)과 요약(abstract)을 fulltext search를 위해 인덱스 설정 및 각각 인덱스 설정  
+  3. Redis - 랜덤 문서 요청시 전체 문서수를 먼저 얻고 그 문서수에서 랜덤 숫자를 만들어 랜덤 숫자만큼 스킵하는데 처음 전체 문서수를 얻는 시간이 너무 오래 걸려서 전체 문서수는 저장(이후 년도,월 별로 추가 예정)
 
 ## Features to add
 1. 검색 기능 다양화 명칭, 요악에서 검색 가능
-2. MySQL ORM 연동 - Docker-compose에 추가
-   1. 유저 정보, 관심 특허 분야/ 관심 특허 저장
-3. MongoDB 도 Docker-compose에 추가
-   1. 현재 기존에 사용하던 MongoDB에 연결해서 사용하고 있으나 분리해서 같이 관리
-4. DB 백업 기능
-
+2. MySQL - 유저 정보, 관심 특허 분야 / 관심 특허 저장
 
 ## Status Codes
 *  https://www.npmjs.com/package/http-status-codes
