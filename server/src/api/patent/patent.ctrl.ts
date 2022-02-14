@@ -75,7 +75,6 @@ const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: R
         const result = await Patent.findOne().skip(randomCount)
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
-        console.log(e)
         next(e)
     }
 };
