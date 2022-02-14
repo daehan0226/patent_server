@@ -9,11 +9,11 @@ if (process.env.NODE_ENV === 'test') {
     redisClient = redis.createClient();
 } else {
     const url = `redis://:${config.password}@${config.host}:${config.port}`
+    Logger.info(`redis url : ${url}`)
     redisClient = createClient({url});
     redisClient.connect()
     redisClient.on('error', (e:string) => {
-        Logger.error(e)
-        Logger.error("redisClient connection error")
+        Logger.error("redisClient connection error : ", e)
     });
 }
 

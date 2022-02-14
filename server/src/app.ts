@@ -8,6 +8,7 @@ import errorHandler from './lib/errorHandler'
 import db from "./configs/db.config";
 import patent from "./api/patent";
 import setHeaders from "./lib/rules";
+import Logger from "./lib/logger";
 
 
 const app = express();
@@ -23,12 +24,13 @@ app.use("/patents", patent);
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
+    Logger.info(`mongdb(mongoose) url : ${db.url}${db.database}`)
     mongoose
         .connect(db.url, {
             dbName: db.database
         })
-        .then(() => console.log('MongoDB Connected'))
-        .catch((err: Error) => console.log(err))
+        .then()
+        .catch((err: Error) => Logger.error(err))
 }
 
 export default app;
