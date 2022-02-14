@@ -6,6 +6,7 @@ import {
 	StatusCodes,
 } from 'http-status-codes';
 import Patent from '../../models/patent.model';
+import {getCachedPatentCount} from "../../services/redis_store";
 
 const defaultSize = 10;
 const defaultPage = 1;
@@ -70,7 +71,7 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
 
 const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: Response, next: NextFunction) {
     try {
-        const count = await Patent.countDocuments() // too slow
+        const count = await getCachedPatentCount()
         const randomCount = Math.floor(Math.random() * count)
         const result = await Patent.findOne().skip(randomCount)
         return res.status(StatusCodes.OK).json(result)
