@@ -1,5 +1,5 @@
 import {Op} from 'sequelize'
-import User, {GetAllUsersFilters, UserInput, UserOuput} from '../../models/mysql/User'
+import User, {GetAllUsersFilters, UserInput, UserOuput} from '../../models/mysql/user'
 
 const create = async (payload: UserInput): Promise<UserOuput> => {
     const user = await User.create(payload)

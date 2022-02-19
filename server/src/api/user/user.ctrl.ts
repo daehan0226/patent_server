@@ -4,7 +4,7 @@ import {
 	StatusCodes,
 } from 'http-status-codes';
 import * as User from './user.dal';
-import {UserInput} from "../../models/mysql/User"
+import {UserInput} from "../../models/mysql/user"
 import { UniqueConstraintError } from 'sequelize';
 
 const getById = async function (req:Request<{_id: number},{},{},{}>, res: Response, next: NextFunction) {
