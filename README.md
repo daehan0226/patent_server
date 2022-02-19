@@ -7,6 +7,34 @@
 3. 테스트 코드를 통과하는 코드 작성
 4. 리팩토링
 
+
+## 파일 구조
+* ./.github/workflows - Github actions
+* ./mongodb - backup,restroe,data volume
+* ./mysql - backup,restroe,data volume
+* ./proxy - nginx
+* ./server
+    * ./src/
+        1. ./api/resources/
+            * index.ts - routes
+            * *.ctrl.ts - controller
+            * *.dal.ts - data access layer(=repository)
+            * *.test.ts - test
+        2. ./configs
+            * mysql, mongodb, redis 연결 관련
+        3. ./model/mysql
+            * index.ts - sequelize 인스턴스 생성
+            * init.ts - db init(모델 동기화)
+            * Table.ts - db 테이블 타입 정의
+        4. ./model/mongo
+        5. ./lib - packages related
+        6. services - other providers(redis)
+        7. utils - helper functions
+        8. app.ts
+        9. config.ts - import .env
+  * ./jest.config.ts ./jest/* - 테스트 관련 설정 파일
+
+
 ## Features
 1. 특허 검색
    1. 조건 : 등록 날짜 기간
