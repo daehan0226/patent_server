@@ -5,8 +5,7 @@ import {convertInt} from "../../utils/numberHelpers";
 import {
 	StatusCodes,
 } from 'http-status-codes';
-import Patent from '../../models/patent.model';
-import {getCachedPatentCount} from "../../services/redis_store";
+import * as Patent from './patent.dal';
 
 const defaultSize = 10;
 const defaultPage = 1;
@@ -31,11 +30,12 @@ interface IGetRandomQuery extends Ifilter {}
 
 const getById = async function (req:Request<{_id: string},{},{},{}>, res: Response, next: NextFunction) {
     try {
-        const result = await Patent.findById(req.params._id)
-        if (result) {
+        try {
+            const result = await Patent.getById(req.params._id)
             return res.status(StatusCodes.OK).json(result);
+        } catch {
+            return res.status(StatusCodes.NOT_FOUND).send({error: `Patent(_id:'${req.params._id}') does not exist.`});
         }
-        return res.status(StatusCodes.NOT_FOUND).send({error: `Patent(_id:'${req.params._id}') does not exist.`});
     } catch (e) {
         next(e)
     }
@@ -48,21 +48,12 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
         if (title.length >= 200 || desc.length >= 200) {
             return res.status(StatusCodes.BAD_REQUEST).send({error: `Title or desc search query is too long.`});
         }
-
         const size = convertInt({value:req.query.size, defaultValue:defaultSize})
         const page = convertInt({value:req.query.page, defaultValue:defaultPage})
         const gdStartDate = genDate({strDate:req.query.gdStartDate, defaultDate: defaultGdStartDate});
         const gdEndDate = genDate({strDate:req.query.gdEndDate, defaultDate: defaultGdEndDate});
-        const query: {title?:string, abstract?: string, patent_date: {"$gte": Date, "$lt": Date} } = {
-            "patent_date": {
-                "$gte": gdStartDate, 
-                "$lt": gdEndDate
-            }
-        }
-        if (title) query["title"] = title;
-        if (desc) query["abstract"] = desc;
-        const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
-        const result = await Patent.find(query).skip(skipNumber).limit(size)
+        
+        const result = await Patent.getAll({title, desc, gdStartDate, gdEndDate, page, size})
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
         next(e)
@@ -71,9 +62,7 @@ const getAll = async function (req:Request<{},{},{},IGetAllQuery>, res: Response
 
 const getRandom  = async function (req:Request<{},{},{},IGetRandomQuery>, res: Response, next: NextFunction) {
     try {
-        const count = await getCachedPatentCount()
-        const randomCount = Math.floor(Math.random() * count)
-        const result = await Patent.findOne().skip(randomCount)
+        const result = await Patent.getRandom()
         return res.status(StatusCodes.OK).json(result)
     } catch (e) {
         next(e)
