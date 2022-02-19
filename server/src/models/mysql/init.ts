@@ -2,7 +2,7 @@ import User from "./User"
 
 const isDev = process.env.NODE_ENV === 'development'
 
-const dbInit = () => {
-    User.sync({ alter: isDev })
+const dbInit = async () => {
+    await User.sync({ alter: isDev })
 }
 export default dbInit 
