@@ -1,4 +1,4 @@
-import User from "./User"
+import User from "./user"
 
 const isDev = process.env.NODE_ENV === 'development'
 
