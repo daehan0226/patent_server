@@ -4,8 +4,8 @@ import {
 	StatusCodes,
 } from 'http-status-codes';
 import * as User from './user.dal';
-import {UserInput} from "../../models/mysql/user"
-import { UniqueConstraintError } from 'sequelize';
+import {UserInput} from "../../database/mysql/user"
+import { UniqueConstraintError, ValidationError } from 'sequelize';
 
 const getById = async function (req:Request<{_id: number},{},{},{}>, res: Response, next: NextFunction) {
     try {
@@ -61,14 +61,17 @@ const deleteById = async function (req:Request<{_id: number},{},{},{}>, res: Res
     }
 };
 
-
 const create = async function (req:Request<{},{},UserInput,{}>, res: Response, next: NextFunction) {
     try {
-        const result = await User.create({name:req.body.name})
+        const result = await User.create({name:req.body.name, password: req.body.password})
         return res.status(StatusCodes.CREATED).json(result);
     } catch (e) {
+        console.log(e)
         if (e instanceof UniqueConstraintError) {
-            return res.status(StatusCodes.BAD_REQUEST).send();
+            return res.status(StatusCodes.BAD_REQUEST).send({error: `User name ${req.body.name} already exists.`});
+        }
+        if (e instanceof ValidationError) {
+            return res.status(StatusCodes.BAD_REQUEST).send({error: `Name or password format error`});
         }
         next(e)
     }
