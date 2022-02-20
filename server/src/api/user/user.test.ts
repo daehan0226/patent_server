@@ -1,7 +1,7 @@
 import {agent as request} from 'supertest';
 import app from "../../app"
-import sequelize from '../../models/mysql';
-import dbInit from "../../models/mysql/init"
+import sequelize from '../../database/mysql';
+import dbInit from "../../database/mysql/init"
 
 
 describe('test user endpoints', ()=> {
@@ -17,14 +17,23 @@ describe('test user endpoints', ()=> {
     describe('Post /users', ()=> {
         it('return 201 after creating a user', async ()=> {
             const name = 'test01'
-            const res = await request(app).post('/users').send({name});
+            const password = 'aaSS11@@'
+            const res = await request(app).post('/users').send({name, password});
             expect(res.status).toBe(201);
             expect(res.body).toHaveProperty("name", name);
         });
         it('return 400 for a dupulicat name', async ()=> {
             const name = 'test02'
-            await request(app).post('/users').send({name});
-            const res = await request(app).post('/users').send({name});
+            const password = 'aaSS11@@'
+            await request(app).post('/users').send({name, password});
+            const res = await request(app).post('/users').send({name, password});
+            expect(res.status).toBe(400);
+        });
+        it('return 400 for long name', async ()=> {
+            const name = 'test12'.repeat(100)
+            const password = 'aaSS11@@'
+            const res = await request(app).post('/users').send({name, password});
+            console.log(res.body)
             expect(res.status).toBe(400);
         });
     })
@@ -33,7 +42,8 @@ describe('test user endpoints', ()=> {
     describe('Get /users/:id', ()=> {
         it('return 200 if user exists', async ()=> {
             const name = 'test03'
-            const newUser = await request(app).post('/users').send({name});
+            const password = 'aaSS11@@'
+            const newUser = await request(app).post('/users').send({name, password});
             const res = await request(app).get(`/users/${newUser.body.id}`);
             expect(res.status).toBe(200);
         });
@@ -52,7 +62,8 @@ describe('test user endpoints', ()=> {
         });
         it('return 204 after deleting a user', async ()=> {
             const name = 'test04'
-            const newUser = await request(app).post('/users').send({name});
+            const password = 'aaSS11@@'
+            const newUser = await request(app).post('/users').send({name, password});
             const res = await request(app).delete(`/users/${newUser.body.id}`);
             expect(res.status).toBe(204);
         });
@@ -62,8 +73,9 @@ describe('test user endpoints', ()=> {
     describe('update /users/:id', ()=> {
         it('return 200 if succeeds to change name', async ()=> {
             const name = 'test05'
+            const password = 'aaSS11@@'
             const newName = 'test06'
-            const newUser = await request(app).post('/users').send({name});
+            const newUser = await request(app).post('/users').send({name, password});
             const newUserWithNewName = await request(app).put(`/users/${newUser.body.id}`).send({name:newName});
             expect(newUserWithNewName.body).toHaveProperty("name", newName);
         });

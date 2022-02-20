@@ -1,7 +1,7 @@
 import {agent as request} from 'supertest';
 import app from "../../app"
-import {connect, disconnect} from "../../models/mongo/mongo.test";
-import {Patent} from '../../models';
+import {connect, disconnect} from "../../database/mongo/mongo.test";
+import {Patent} from '../../database';
 
 
 describe('test endpoints after insert dummy patetns', ()=> {

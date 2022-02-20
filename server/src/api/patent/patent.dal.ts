@@ -1,4 +1,4 @@
-import {Patent} from '../../models';
+import {Patent} from '../../database';
 import {getCachedPatentCount} from "../../services/redis_store";
 
 interface ISearch {

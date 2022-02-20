@@ -3,8 +3,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
-import sequelize from "./models/mysql/index";
-import dbInit from "./models/mysql/init"
+import sequelize from "./database/mysql/index";
+import dbInit from "./database/mysql/init"
 
 import morganMiddleware from "./lib/morganMiddleware";
 import errorHandler from './lib/errorHandler'
@@ -24,7 +24,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(setHeaders);
-
 app.use("/patents", patent);
 app.use("/users", user);
 app.use(errorHandler);
