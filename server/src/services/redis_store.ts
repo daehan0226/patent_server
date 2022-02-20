@@ -1,7 +1,7 @@
 import { createClient} from 'redis';
 import config from '../configs/redis.config';
 import Logger from '../lib/logger';
-import {Patent} from "../models"
+import {Patent} from "../database"
 import redis from "redis-mock"
 
 let redisClient: any;
