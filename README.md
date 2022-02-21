@@ -28,8 +28,8 @@
             * init.ts - db init(모델 동기화)
             * Table.ts - db 테이블 타입 정의
         4. ./database/mongo
-        5. ./middlewares - logging, session, error handler, morgan, headers
-        6. services - other providers(redis)
+        5. ./database/redis
+        6. ./middlewares - logging, session, error handler, morgan, headers
         7. utils - helper functions
         8. app.ts
         9.  config.ts - import .env
