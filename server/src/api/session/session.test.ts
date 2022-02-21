@@ -30,5 +30,30 @@ describe('test session endpoints', ()=> {
             expect(res.status).toBe(400);
         });
     })
+    
+    describe('validate /sessions/validate', ()=> {
+        it('return 200 if session cookie is valid', async ()=> {
+            const name = 'test-session-03'
+            const password = 'aA1!aA1!'
+            await request(app).post('/users').send({name, password});
+            const session = await request(app).post('/sessions').send({name, password});
+            const res = await request(app).get('/sessions/validate').send().set('Cookie', session.headers["set-cookie"]);
+            expect(res.status).toBe(200);
+        });
+        it('return 401 if session cookie is not valid', async ()=> {
+            const res = await request(app).get('/sessions/validate').send().set('Cookie', 'random session id');
+            expect(res.status).toBe(401);
+        });
+    })
 
+    describe('delete /sessions', ()=> {
+        it('return 204 if succeeds to destory session', async ()=> {
+            const name = 'test-session-04'
+            const password = 'aA1!aA1!'
+            await request(app).post('/users').send({name, password});
+            await request(app).post('/sessions').send({name, password});
+            const res = await request(app).delete('/sessions')
+            expect(res.status).toBe(204);
+        });
+    })
 })
