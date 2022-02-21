@@ -1,6 +1,6 @@
 import { createClient} from 'redis';
-import config from '../../configs/redis.config';
-import Logger from '../../middlewares/logger';
+import config from '../configs/redis.config';
+import Logger from '../middlewares/logger';
 import redis from "redis-mock"
 
 let redisClient: any;

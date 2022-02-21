@@ -6,7 +6,7 @@ import sequelize from "./database/mysql/index";
 import dbInit from "./database/mysql/init"
 
 import morganMiddleware from "./middlewares/morganMiddleware";
-import sessionMiddleware from "./middlewares/sessionMiddleware";
+import sessionMiddleware, {ISessionUser} from "./middlewares/sessionMiddleware";
 import errorHandler from './middlewares/errorHandler'
 import db from "./configs/db.config";
 import mysqlConfig from "./configs/mysql.config";
@@ -21,7 +21,7 @@ const app = express();
 declare module 'express-session' {
     interface SessionData {
         cookie: Cookie;
-        username: string;
+        user: ISessionUser | null;
         loggedIn: boolean;
     }
 }
