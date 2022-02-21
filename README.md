@@ -28,7 +28,7 @@
             * init.ts - db init(모델 동기화)
             * Table.ts - db 테이블 타입 정의
         4. ./database/mongo
-        5. ./database/redis
+        5. ./services/redis
         6. ./middlewares - logging, session, error handler, morgan, headers
         7. utils - helper functions
         8. app.ts
@@ -51,14 +51,13 @@
       2.  명칭(title)과 요약(abstract)을 fulltext search를 위해 인덱스 설정 및 각각 인덱스 설정  
    3. Redis - 랜덤 특허 문서 조회시 속도 개선
       1. 랜덤 특허 문서 요청시 전체 문서수를 먼저 계산하고 그 문서수에서 랜덤 숫자를 만들어 랜덤 숫자만큼 스킵하는데 처음 전체 문서수를 계산하는 시간이 너무 오래 걸려서 전체 문서수 저장(이후 년도,월 별로 추가 예정)
-
-## Features - working on now 
-* 유저 로그인, 세션
+3. 유저 회원가입, 쿠키 세션
   
+## Features - working on now
+   1. MySQL - 관심 키워드 저장 / 
+
 ## Features to add
-0. 유저 세션 기능 추가중..
-1. 검색 기능 다양화 명칭, 요악에서 검색 가능
-2. MySQL - 유저 정보, 관심 특허 분야 / 관심 특허 저장
+   1. 검색 기능 다양화 명칭, 요악에서 검색 가능
 
 ## Status Codes
 *  https://www.npmjs.com/package/http-status-codes
