@@ -1,7 +1,7 @@
 "use strict";
 import './config'
 import app from "./app"
-import Logger from './lib/logger';
+import Logger from './middlewares/logger';
 
 const port = process.env.EXPRESS_PORT;
 app.listen(port, () => {
