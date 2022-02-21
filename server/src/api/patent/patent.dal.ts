@@ -1,9 +1,10 @@
 import {Patent} from '../../database';
-import redisClient from "../../database/redis/redis_store";
+import redisClient from "../../services/redis_store";
 
-interface ISearch {
+export interface ISearch {
     title: string;
     desc: string;
+    fullSearch: string;
 }
 
 interface Ifilter {
@@ -13,9 +14,7 @@ interface Ifilter {
     gdEndDate: Date;
 }
 
-interface IGetAllQuery extends ISearch, Ifilter {}
-interface IGetRandomQuery extends Ifilter {}
-
+export interface IGetAllQuery extends ISearch, Ifilter {}
 
 const getById = async function (id:string) {
     const result = await Patent.findById(id)
@@ -25,20 +24,23 @@ const getById = async function (id:string) {
     throw new Error('not found')
 };
 
-const getAll = async function ({gdStartDate, gdEndDate, title, desc, page, size}: IGetAllQuery) {    
-    const query: {title?:string, abstract?: string, patent_date: {"$gte": Date, "$lt": Date}} = {
+const getAll = async function ({gdStartDate, gdEndDate, title, desc, fullSearch, page, size}: IGetAllQuery) {    
+    const query: {$title?:string, $abstract?: string, $text?: {$search: string}, patent_date: {"$gte": Date, "$lt": Date}} = {
         "patent_date": {
             "$gte": gdStartDate, 
             "$lt": gdEndDate
         }
     }
-    if (title) query["title"] = title;
-    if (desc) query["abstract"] = desc;
-    const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0 
-    return await Patent.find(query).skip(skipNumber).limit(size)
+    if (title) query["$title"] = title;
+    if (desc) query["$abstract"] = desc;
+    if (fullSearch) query["$text"] = {$search: fullSearch}
+    const skipNumber = page > 0 ? ( ( page - 1 ) * size ) : 0
+    const count = await Patent.find(query).countDocuments()
+    const patents = await Patent.find(query).skip(skipNumber).limit(size).exec()
+    return {patents, count, title, desc, fullSearch, gdStartDate, gdEndDate}
 };
 
-const getRandom  = async function () {
+const getTotalCountFromRedis = async (): Promise<number> => {
     let count;
     if(!redisClient.get('patent_count')) {
         count = await Patent.countDocuments()
@@ -54,7 +56,11 @@ const getRandom  = async function () {
         count = await Patent.countDocuments()
         redisClient.set('patent_count', count);
     }
-    const randomCount = Math.floor(Math.random() * count)
+    return count;
+}
+
+const getRandom  = async () => {
+    const randomCount = Math.floor(Math.random() * await getTotalCountFromRedis())
     return await Patent.findOne().skip(randomCount)
 };
 

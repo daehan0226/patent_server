@@ -24,14 +24,14 @@ describe('test endpoints after insert dummy patetns', ()=> {
         it('return given size number of patents', async ()=> {
             const size = 5
             const res = await request(app).get(`/patents?size=${size}`);
-            expect(res.body).toHaveLength(size);
+            expect(res.body.patents).toHaveLength(size);
         });
         
         it('return default length for wrong size type', async ()=> {
             const defaultSize= 10;
             const size = 'as'
             const res = await request(app).get(`/patents?size=${size}`);
-            expect(res.body).toHaveLength(defaultSize);
+            expect(res.body.patents).toHaveLength(defaultSize);
         });
     
         it('return 200 for wrong page type(return with default page)', async ()=> {
@@ -42,7 +42,7 @@ describe('test endpoints after insert dummy patetns', ()=> {
     
         it('return default size number of patents when size is not provided', async ()=> {
             const res = await request(app).get(`/patents`);
-            expect(res.body).toHaveLength(10);
+            expect(res.body.patents).toHaveLength(10);
         });
     })
     
