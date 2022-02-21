@@ -22,16 +22,17 @@
             * *.test.ts - test
         2. ./configs
             * mysql, mongodb, redis 연결 관련
-        3. ./model/mysql
+        3. ./database/mysql
+            * config, migartion - sequelize migration
             * index.ts - sequelize 인스턴스 생성
             * init.ts - db init(모델 동기화)
             * Table.ts - db 테이블 타입 정의
-        4. ./model/mongo
-        5. ./lib - packages related
+        4. ./database/mongo
+        5. ./middlewares - logging, session, error handler, morgan, headers
         6. services - other providers(redis)
         7. utils - helper functions
         8. app.ts
-        9. config.ts - import .env
+        9.  config.ts - import .env
   * ./jest.config.ts ./jest/* - 테스트 관련 설정 파일
 
 
@@ -51,7 +52,11 @@
    3. Redis - 랜덤 특허 문서 조회시 속도 개선
       1. 랜덤 특허 문서 요청시 전체 문서수를 먼저 계산하고 그 문서수에서 랜덤 숫자를 만들어 랜덤 숫자만큼 스킵하는데 처음 전체 문서수를 계산하는 시간이 너무 오래 걸려서 전체 문서수 저장(이후 년도,월 별로 추가 예정)
 
+## Features - working on now 
+* 유저 로그인, 세션
+  
 ## Features to add
+0. 유저 세션 기능 추가중..
 1. 검색 기능 다양화 명칭, 요악에서 검색 가능
 2. MySQL - 유저 정보, 관심 특허 분야 / 관심 특허 저장
 
