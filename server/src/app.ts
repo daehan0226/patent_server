@@ -2,31 +2,40 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-
 import sequelize from "./database/mysql/index";
 import dbInit from "./database/mysql/init"
 
 import morganMiddleware from "./lib/morganMiddleware";
+import sessionMiddleware from "./lib/sessionMiddleware";
 import errorHandler from './lib/errorHandler'
 import db from "./configs/db.config";
 import mysqlConfig from "./configs/mysql.config";
 import patent from "./api/patent";
 import user from "./api/user";
+import session from "./api/session";
 import setHeaders from "./lib/rules";
 import Logger from "./lib/logger";
 
-
 const app = express();
 
-app.use(morganMiddleware)
+declare module 'express-session' {
+    interface SessionData {
+        cookie: Cookie;
+        username: string;
+        loggedIn: boolean;
+    }
+}
 
+app.use(morganMiddleware)
+app.use(sessionMiddleware)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(setHeaders);
-app.use("/patents", patent);
-app.use("/users", user);
 app.use(errorHandler);
+
+app.use("/patents", patent);
+app.use("/sessions", session);
+app.use("/users", user);
 
 sequelize.sync() 
 .then(()=>{
