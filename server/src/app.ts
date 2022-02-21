@@ -5,16 +5,16 @@ import mongoose from "mongoose";
 import sequelize from "./database/mysql/index";
 import dbInit from "./database/mysql/init"
 
-import morganMiddleware from "./lib/morganMiddleware";
-import sessionMiddleware from "./lib/sessionMiddleware";
-import errorHandler from './lib/errorHandler'
+import morganMiddleware from "./middlewares/morganMiddleware";
+import sessionMiddleware from "./middlewares/sessionMiddleware";
+import errorHandler from './middlewares/errorHandler'
 import db from "./configs/db.config";
 import mysqlConfig from "./configs/mysql.config";
 import patent from "./api/patent";
 import user from "./api/user";
 import session from "./api/session";
-import setHeaders from "./lib/rules";
-import Logger from "./lib/logger";
+import setHeaders from "./middlewares/rules";
+import Logger from "./middlewares/logger";
 
 const app = express();
 

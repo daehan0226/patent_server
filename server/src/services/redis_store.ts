@@ -1,6 +1,6 @@
 import { createClient} from 'redis';
 import config from '../configs/redis.config';
-import Logger from '../lib/logger';
+import Logger from '../middlewares/logger';
 import {Patent} from "../database"
 import redis from "redis-mock"
 
