@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
 	StatusCodes,
 } from 'http-status-codes';
+import Logger from '../../middlewares/logger';
 import * as Session from './session.dal';
 
 interface ISession {
@@ -27,6 +28,41 @@ const create = async function (req:Request<{},{},ISession,{}>, res: Response, ne
     }
 };
 
+
+const destory = async function (req:Request<{},{},ISession,{}>, res: Response, next: NextFunction) {
+    try {
+        const session = req.session;
+        session.destroy(err=> {
+            if(err) {
+                Logger.error(`Destory session error : ${err}`)
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({error: 'Could not log out'});
+            }
+        })
+        session.username = ''
+        session.loggedIn = false;
+        return res.status(StatusCodes.NO_CONTENT).send();
+    } catch (e) {
+        next(e)
+    }
+};
+
+
+const validate = async function (req:Request<{},{},ISession,{}>, res: Response, next: NextFunction) {
+    try {
+        const session = req.session;
+        if (session.loggedIn) {
+            return res.status(StatusCodes.OK).send();
+        }
+        session.username = ''
+        session.loggedIn = false;
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+    } catch (e) {
+        next(e)
+    }
+};
+
 export {
-    create
+    create,
+    destory,
+    validate
 }
