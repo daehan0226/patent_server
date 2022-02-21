@@ -13,14 +13,19 @@ interface ISession {
 
 const create = async function (req:Request<{},{},ISession,{}>, res: Response, next: NextFunction) {
     try {
-        const result = await Session.create({name:req.body.name, password: req.body.password})
+        const name = req.body.name
+        const password = req.body.password
+        const userId = await Session.create({name, password})
         const session = req.session;
-        if (result) {
-            session.username = req.body.name
+        if (userId) {
+            session.user = {
+                id: userId,
+                name
+            }
             session.loggedIn = true;
             return res.status(StatusCodes.CREATED).send();
         }
-        session.username = ''
+        session.user = null;
         session.loggedIn = false;
         return res.status(StatusCodes.BAD_REQUEST).send({error: 'Wrong username and password'});
     } catch (e) {
@@ -38,7 +43,7 @@ const destory = async function (req:Request<{},{},ISession,{}>, res: Response, n
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({error: 'Could not log out'});
             }
         })
-        session.username = ''
+        session.user = null;
         session.loggedIn = false;
         return res.status(StatusCodes.NO_CONTENT).send();
     } catch (e) {
@@ -53,7 +58,7 @@ const validate = async function (req:Request<{},{},ISession,{}>, res: Response, 
         if (session.loggedIn) {
             return res.status(StatusCodes.OK).send();
         }
-        session.username = ''
+        session.user = null;
         session.loggedIn = false;
         return res.status(StatusCodes.UNAUTHORIZED).send();
     } catch (e) {
