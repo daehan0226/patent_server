@@ -1,5 +1,5 @@
 import {Patent} from '../../database';
-import {getCachedPatentCount} from "../../services/redis_store";
+import redisClient from "../../database/redis/redis_store";
 
 interface ISearch {
     title: string;
@@ -39,7 +39,21 @@ const getAll = async function ({gdStartDate, gdEndDate, title, desc, page, size}
 };
 
 const getRandom  = async function () {
-    const count = await getCachedPatentCount()
+    let count;
+    if(!redisClient.get('patent_count')) {
+        count = await Patent.countDocuments()
+        redisClient.set('patent_count', count);
+    } else {
+        count = await redisClient.get('patent_count');
+        if (count) {
+            const countInt = parseInt(count, 10)
+            if (!isNaN(countInt)) {
+                return countInt
+            }
+        }
+        count = await Patent.countDocuments()
+        redisClient.set('patent_count', count);
+    }
     const randomCount = Math.floor(Math.random() * count)
     return await Patent.findOne().skip(randomCount)
 };
@@ -49,3 +63,4 @@ export {
     getById,
     getRandom
 }
+
