@@ -1,10 +1,9 @@
-import winston from 'winston'
-import  DailyRotateFile from 'winston-daily-rotate-file';
+import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 import moment from 'moment-timezone';
 
-
 const timezoned = () => {
-    return moment.tz(new Date(), "Asia/Seoul").format('YYYY-MM-DD h:mm:ss')
+    return moment.tz(new Date(), 'Asia/Seoul').format('YYYY-MM-DD h:mm:ss');
 };
 
 const levels = {
@@ -13,7 +12,7 @@ const levels = {
     info: 2,
     http: 3,
     debug: 4,
-}
+};
 
 const colors = {
     error: 'red',
@@ -21,48 +20,50 @@ const colors = {
     info: 'green',
     http: 'magenta',
     debug: 'white',
-}
+};
 
-winston.addColors(colors)
+winston.addColors(colors);
 
 const format = winston.format.combine(
-    winston.format.timestamp({ format: timezoned  }),
+    winston.format.timestamp({ format: timezoned }),
     winston.format.colorize({ all: true }),
     winston.format.printf(
-      (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-    ),
-)
+        (info) => `${info.timestamp} ${info.level}: ${info.message}`
+    )
+);
 
 const transports = [];
 if (process.env.NODE_ENV !== 'development') {
-    const dailyRotateFileInfoTransport:DailyRotateFile  = new DailyRotateFile({
+    const dailyRotateFileInfoTransport: DailyRotateFile = new DailyRotateFile({
         filename: 'logs/%DATE%.info.log',
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
         maxSize: '20m',
         maxFiles: '14d',
-        level: "http",
-       });
-    const dailyRotateFileErrorTransport:DailyRotateFile  = new DailyRotateFile({
+        level: 'http',
+    });
+    const dailyRotateFileErrorTransport: DailyRotateFile = new DailyRotateFile({
         filename: 'logs/%DATE%.error.log',
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
         maxSize: '20m',
         maxFiles: '14d',
-        level: "warn",
+        level: 'warn',
     });
-    transports.push(dailyRotateFileInfoTransport)
-    transports.push(dailyRotateFileErrorTransport)
+    transports.push(dailyRotateFileInfoTransport);
+    transports.push(dailyRotateFileErrorTransport);
 } else {
-    transports.push(new winston.transports.Console({
-      level: 'debug'
-    }))
+    transports.push(
+        new winston.transports.Console({
+            level: 'debug',
+        })
+    );
 }
 
 const Logger = winston.createLogger({
     levels,
     format,
-    transports
-})
+    transports,
+});
 
-export default Logger
+export default Logger;

@@ -6,22 +6,21 @@ interface ISession {
     password: string;
 }
 
-const create = async (payload:ISession): Promise<number | null> => {
+const create = async (payload: ISession): Promise<number | null> => {
     const user = await User.findOne({
-        attributes: {include: ['password']},
+        attributes: { include: ['password'] },
         where: {
-            name: payload.name
-        }
+            name: payload.name,
+        },
     });
     if (user) {
-        if (bcrypt.compareSync(payload.password, user.getDataValue('password'))) {
+        if (
+            bcrypt.compareSync(payload.password, user.getDataValue('password'))
+        ) {
             return user.id;
         }
     }
-    return null
-}
+    return null;
+};
 
-
-export {
-    create,
-}
+export { create };
