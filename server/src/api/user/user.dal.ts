@@ -1,5 +1,6 @@
 import {Op} from 'sequelize'
 import User, {GetAllUsersFilters, UserInput, UserOuput} from '../../database/mysql/user'
+import Logger from '../../middlewares/logger'
 
 const create = async (payload: UserInput): Promise<UserOuput> => {
     const user = await User.create(payload)
@@ -32,13 +33,24 @@ const deleteById = async (id: number): Promise<boolean> => {
     return !!deletedUserCount
 }
 
-const getAll = async (filters?: GetAllUsersFilters): Promise<UserOuput[]> => {
+const getAll = async (filters: GetAllUsersFilters): Promise<UserOuput[]> => {
+    const query: {deletedAt?:{[Op.not]: null}, name? :{[Op.like]: string};} = {};
+    let includeDeletedUser = false;
+
+    if (filters.name) {
+        query["name"] = {[Op.like]: `%${filters.name}%`} 
+    }
+
+    if (filters.isDeleted) {
+        query["deletedAt"] = {[Op.not]: null}
+    }
+    
+    if (filters.isDeleted || filters.includeDeleted) {
+        includeDeletedUser = true
+    }
+
     return User.findAll({
-        where: {
-            ...(filters?.isDeleted && {deletedAt: {[Op.not]: null}})
-        },
-        ...((filters?.isDeleted || filters?.includeDeleted) && {paranoid: true})
-    })
+        where: query, paranoid: !includeDeletedUser})
 }
 
 export {
