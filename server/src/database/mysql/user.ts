@@ -13,6 +13,7 @@ interface UserAttributes {
 }
 
 export interface GetAllUsersFilters {
+    name?: string;
     isDeleted?: boolean
     includeDeleted?: boolean
 }
@@ -32,34 +33,34 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
     public readonly deletedAt!: Date;
 }
   
-  User.init({
+User.init({
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
     },
     name: {
-      type: DataTypes.STRING(32),
-      allowNull: false,
-      unique: 'name',
-      validate: {
-        len: {
-          args: [4,32],
-          msg: "String length is not in this range(4,32)"
-     }
+        type: DataTypes.STRING(32),
+        allowNull: false,
+        unique: 'name',
+        validate: {
+            len: {
+                args: [4,32],
+                msg: "String length is not in this range(4,32)"
+            }
       }      
     },
     password: {
-      type: DataTypes.STRING(64),
-      allowNull: false,
-      validate: { // 최소 8자 이상으로 영문자 대문자, 영문자 소문자, 숫자, 특수문자가 각각 최소 1개 이상
-        is: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
-      }
+        type: DataTypes.STRING(64),
+        allowNull: false,
+        validate: { // 최소 8자 이상으로 영문자 대문자, 영문자 소문자, 숫자, 특수문자가 각각 최소 1개 이상
+            is: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
+        }
     },
     description: {
-      type: DataTypes.TEXT
+        type: DataTypes.TEXT
     }
-  }, {
+    }, {
     timestamps: true,
     sequelize: sequelize,
     paranoid: true,
@@ -67,7 +68,6 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
         beforeCreate: async (user) => {
             if (user.password) {
                 const salt = await bcrypt.genSaltSync(10, 'a');
-                console.log(bcrypt.hashSync(user.password, salt))
                 user.password = bcrypt.hashSync(user.password, salt);
             }
         },
@@ -77,7 +77,10 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
                 user.password = bcrypt.hashSync(user.password, salt);
             }
         }
+    },
+    defaultScope: {
+      attributes: { exclude: ['password'] },
     }
 })
 
-export default User
+export default User;
