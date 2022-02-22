@@ -1,5 +1,5 @@
-import { Router } from 'express'
-import {getById, deleteById, create, update, getAll} from "./user.ctrl"
+import { Router } from 'express';
+import { getById, deleteById, create, update, getAll } from './user.ctrl';
 
 const router = Router();
 
@@ -9,5 +9,4 @@ router.put('/:_id', update);
 router.post('', create);
 router.get('', getAll);
 
-
-export default router
+export default router;

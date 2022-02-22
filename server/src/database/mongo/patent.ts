@@ -1,22 +1,22 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IPatent extends Document {
-    "title": string,
-    "abstract": string,
-    "claim": string,
-    "applicant": string,
-    "application_date": Date,
-    "patent_number": string,
-    "patent_date": Date,
-    "ipc_original": string,
-    "cpc_original": string,
-    "legal_status": string,
-    "ipc"?: [],
-    "cpc"?: []
+    title: string;
+    abstract: string;
+    claim: string;
+    applicant: string;
+    application_date: Date;
+    patent_number: string;
+    patent_date: Date;
+    ipc_original: string;
+    cpc_original: string;
+    legal_status: string;
+    ipc?: [];
+    cpc?: [];
 }
 
 const PatentSchema = new Schema({
-    _id: {type: String, required: true},
+    _id: { type: String, required: true },
     title: { type: String, required: true },
     abstract: { type: String, required: true },
     claim: { type: String, required: true },
@@ -31,10 +31,9 @@ const PatentSchema = new Schema({
     cpc: { type: String },
 });
 
-PatentSchema.index({ title: 'text', "abstract": 'text' });
+PatentSchema.index({ title: 'text', abstract: 'text' });
 PatentSchema.index({ title: 1 });
-PatentSchema.index({ "abstract": 1 });
-PatentSchema.index({ title: 1, "abstract": 1 });
+PatentSchema.index({ abstract: 1 });
+PatentSchema.index({ title: 1, abstract: 1 });
 
-
-export default mongoose.model<IPatent>('Patent', PatentSchema) // 'Patent -> collection name patents'
+export default mongoose.model<IPatent>('Patent', PatentSchema); // 'Patent -> collection name patents'
