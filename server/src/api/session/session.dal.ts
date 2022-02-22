@@ -8,12 +8,13 @@ interface ISession {
 
 const create = async (payload:ISession): Promise<number | null> => {
     const user = await User.findOne({
+        attributes: {include: ['password']},
         where: {
             name: payload.name
         }
     });
     if (user) {
-        if (bcrypt.compareSync(payload.password, user.password)) {
+        if (bcrypt.compareSync(payload.password, user.getDataValue('password'))) {
             return user.id;
         }
     }
