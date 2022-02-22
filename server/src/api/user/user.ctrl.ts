@@ -4,7 +4,7 @@ import {
 	StatusCodes,
 } from 'http-status-codes';
 import * as User from './user.dal';
-import {UserInput} from "../../database/mysql/user"
+import {GetAllUsersFilters, UserInput} from "../../database/mysql/user"
 import { UniqueConstraintError, ValidationError } from 'sequelize';
 
 const getById = async function (req:Request<{_id: number},{},{},{}>, res: Response, next: NextFunction) {
@@ -21,10 +21,13 @@ const getById = async function (req:Request<{_id: number},{},{},{}>, res: Respon
 };
 
 
-const getAll = async function (req:Request<{},{},{},{}>, res: Response, next: NextFunction) {
+const getAll = async function (req:Request<{},{},{},GetAllUsersFilters>, res: Response, next: NextFunction) {
     try {
         try {
-            const result = await User.getAll({includeDeleted: true})
+            // check if admin or manger user or return 403
+            const name = req.query.name || ""
+            const includeDeleted = false // check if admin with session
+            const result = await User.getAll({includeDeleted, name})
             return res.status(StatusCodes.OK).json(result);
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();
