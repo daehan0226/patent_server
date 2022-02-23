@@ -1,13 +1,24 @@
 import { Op } from 'sequelize';
+import Role from '../../database/mysql/role';
 import User, {
     GetAllUsersFilters,
     UserInput,
     UserOuput,
 } from '../../database/mysql/user';
+import UserRole from '../../database/mysql/userRole';
 import Logger from '../../middlewares/logger';
 
 const create = async (payload: UserInput): Promise<UserOuput> => {
     const user = await User.create(payload);
+    const customerRole = await Role.findOne({
+        where: { name: 'customer' },
+    });
+    if (customerRole) {
+        await UserRole.create({
+            user_id: user.id,
+            role_id: customerRole.id,
+        });
+    }
     return user;
 };
 
@@ -62,6 +73,14 @@ const getAll = async (filters: GetAllUsersFilters): Promise<UserOuput[]> => {
     return User.findAll({
         where: query,
         paranoid: !includeDeletedUser,
+        attributes: ['id', 'name'],
+        include: [
+            {
+                model: Role,
+                through: { attributes: [] },
+                attributes: ['name'],
+            },
+        ],
     });
 };
 

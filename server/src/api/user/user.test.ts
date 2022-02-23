@@ -99,4 +99,16 @@ describe('test user endpoints', () => {
             expect(res.status).toBe(200);
         });
     });
+
+    describe('get user role /users', () => {
+        it('has user role data', async () => {
+            const name = 'test-user-role-01';
+            const password = 'aaSS11@@';
+            const res = await request(app)
+                .post('/users')
+                .send({ name, password });
+            expect(res.status).toBe(201);
+            expect(res.body).toHaveProperty('Roles');
+        });
+    });
 });
