@@ -89,7 +89,6 @@ const create = async function (
         });
         return res.status(StatusCodes.CREATED).json(result);
     } catch (e) {
-        console.log(e);
         if (e instanceof UniqueConstraintError) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
