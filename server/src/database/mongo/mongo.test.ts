@@ -10,7 +10,6 @@ export const connect = async () => {
         },
     });
     const uri = mongod.getUri();
-
     await mongoose.connect(uri);
 };
 
@@ -21,9 +20,7 @@ export const disconnect = async () => {
 
 describe('Single MongoMemoryServer', () => {
     beforeAll(() => connect());
-
     afterAll(() => disconnect());
-
     it('connect mongodb memory server', async () => {
         expect(mongod).toBeInstanceOf(MongoMemoryServer);
         expect(mongod.getUri()).toContain('mongodb://127.0.0.1');

@@ -1,4 +1,4 @@
-import { Patent } from '../../database';
+import Patent from '../../database/mongo/patent';
 import redisClient from '../../services/redis_store';
 
 export interface ISearch {
