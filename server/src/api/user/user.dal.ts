@@ -1,14 +1,33 @@
 import { Op } from 'sequelize';
+import Role, { RoleOuput } from '../../database/mysql/role';
 import User, {
     GetAllUsersFilters,
     UserInput,
     UserOuput,
 } from '../../database/mysql/user';
-import Logger from '../../middlewares/logger';
+import UserRole from '../../database/mysql/userRole';
 
-const create = async (payload: UserInput): Promise<UserOuput> => {
+interface IUser extends UserOuput, RoleOuput {}
+
+const includeUserRole = {
+    model: Role,
+    as: 'roles',
+    through: { attributes: [] },
+    attributes: ['id', 'name'],
+};
+
+const create = async (payload: UserInput): Promise<IUser> => {
     const user = await User.create(payload);
-    return user;
+    const customerRole = await Role.findOne({
+        where: { name: 'customer' },
+    });
+    if (customerRole) {
+        await UserRole.create({
+            user_id: user.id,
+            role_id: customerRole.id,
+        });
+    }
+    return await getById(user.id);
 };
 
 const update = async (
@@ -24,8 +43,8 @@ const update = async (
     return updatedUser;
 };
 
-const getById = async (id: number): Promise<UserOuput> => {
-    const user = await User.findByPk(id);
+const getById = async (id: number): Promise<IUser> => {
+    const user = await User.findByPk(id, { include: [includeUserRole] });
     if (!user) {
         // @todo throw custom error
         throw new Error('not found');
@@ -40,7 +59,7 @@ const deleteById = async (id: number): Promise<boolean> => {
     return !!deletedUserCount;
 };
 
-const getAll = async (filters: GetAllUsersFilters): Promise<UserOuput[]> => {
+const getAll = async (filters: GetAllUsersFilters): Promise<IUser[]> => {
     const query: {
         deletedAt?: { [Op.not]: null };
         name?: { [Op.like]: string };
@@ -62,6 +81,8 @@ const getAll = async (filters: GetAllUsersFilters): Promise<UserOuput[]> => {
     return User.findAll({
         where: query,
         paranoid: !includeDeletedUser,
+        attributes: ['id', 'name'],
+        include: [includeUserRole],
     });
 };
 
