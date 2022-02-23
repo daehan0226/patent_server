@@ -1,14 +1,22 @@
 import { Op } from 'sequelize';
-import Role from '../../database/mysql/role';
+import Role, { RoleOuput } from '../../database/mysql/role';
 import User, {
     GetAllUsersFilters,
     UserInput,
     UserOuput,
 } from '../../database/mysql/user';
 import UserRole from '../../database/mysql/userRole';
-import Logger from '../../middlewares/logger';
 
-const create = async (payload: UserInput): Promise<UserOuput> => {
+interface IUser extends UserOuput, RoleOuput {}
+
+const includeUserRole = {
+    model: Role,
+    as: 'roles',
+    through: { attributes: [] },
+    attributes: ['id', 'name'],
+};
+
+const create = async (payload: UserInput): Promise<IUser> => {
     const user = await User.create(payload);
     const customerRole = await Role.findOne({
         where: { name: 'customer' },
@@ -19,7 +27,7 @@ const create = async (payload: UserInput): Promise<UserOuput> => {
             role_id: customerRole.id,
         });
     }
-    return user;
+    return await getById(user.id);
 };
 
 const update = async (
@@ -35,8 +43,8 @@ const update = async (
     return updatedUser;
 };
 
-const getById = async (id: number): Promise<UserOuput> => {
-    const user = await User.findByPk(id);
+const getById = async (id: number): Promise<IUser> => {
+    const user = await User.findByPk(id, { include: [includeUserRole] });
     if (!user) {
         // @todo throw custom error
         throw new Error('not found');
@@ -51,7 +59,7 @@ const deleteById = async (id: number): Promise<boolean> => {
     return !!deletedUserCount;
 };
 
-const getAll = async (filters: GetAllUsersFilters): Promise<UserOuput[]> => {
+const getAll = async (filters: GetAllUsersFilters): Promise<IUser[]> => {
     const query: {
         deletedAt?: { [Op.not]: null };
         name?: { [Op.like]: string };
@@ -74,13 +82,7 @@ const getAll = async (filters: GetAllUsersFilters): Promise<UserOuput[]> => {
         where: query,
         paranoid: !includeDeletedUser,
         attributes: ['id', 'name'],
-        include: [
-            {
-                model: Role,
-                through: { attributes: [] },
-                attributes: ['name'],
-            },
-        ],
+        include: [includeUserRole],
     });
 };
 

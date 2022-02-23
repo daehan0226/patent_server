@@ -3,7 +3,7 @@ import sequelize from '.';
 import User from './user';
 import Role from './role';
 
-interface UserRoleAttributes {
+export interface UserRoleAttributes {
     user_id: number;
     role_id: number;
 }
@@ -35,7 +35,15 @@ UserRole.init(
     }
 );
 
-Role.belongsToMany(User, { through: UserRole, foreignKey: 'role_id' });
-User.belongsToMany(Role, { through: UserRole, foreignKey: 'user_id' });
+Role.belongsToMany(User, {
+    through: UserRole,
+    foreignKey: 'role_id',
+    as: 'roles',
+});
+User.belongsToMany(Role, {
+    through: UserRole,
+    foreignKey: 'user_id',
+    as: 'roles',
+});
 
 export default UserRole;

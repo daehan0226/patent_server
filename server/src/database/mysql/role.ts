@@ -2,14 +2,14 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '.';
 
 interface RoleAttributes {
-    id?: number;
+    id: number;
     name: string;
 }
 
 export interface RoleInput extends Optional<RoleAttributes, 'id'> {}
 export interface RoleOuput extends Required<RoleAttributes> {}
 
-class Role extends Model<RoleAttributes> implements RoleAttributes {
+class Role extends Model<RoleAttributes, RoleInput> implements RoleAttributes {
     public id!: number;
     public name!: string;
 }
