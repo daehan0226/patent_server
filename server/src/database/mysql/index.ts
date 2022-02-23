@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
-import mysqlConfig from '../../configs/mysql.config';
+import db from '../../configs/db.config';
 
-const sequelize = new Sequelize(mysqlConfig.url);
+const sequelize = new Sequelize(db.mysqlUrl);
 
 export default sequelize;

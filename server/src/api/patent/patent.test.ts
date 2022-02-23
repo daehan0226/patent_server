@@ -1,7 +1,7 @@
 import { agent as request } from 'supertest';
 import app from '../../app';
 import { connect, disconnect } from '../../database/mongo/mongo.test';
-import { Patent } from '../../database';
+import Patent from '../../database/mongo/patent';
 
 describe('test endpoints after insert dummy patetns', () => {
     beforeAll(async () => {

@@ -1,22 +1,20 @@
 'use strict';
 import express from 'express';
 import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import sequelize from './database/mysql/index';
-import dbInit from './database/mysql/init';
 
-import morganMiddleware from './middlewares/morganMiddleware';
-import sessionMiddleware, {
+import {
+    morganMiddleware,
+    sessionMiddleware,
     ISessionUser,
-} from './middlewares/sessionMiddleware';
-import errorHandler from './middlewares/errorHandler';
-import db from './configs/db.config';
-import mysqlConfig from './configs/mysql.config';
+    errorHandler,
+    setHeaders,
+} from './middlewares';
+
 import patent from './api/patent';
 import user from './api/user';
 import session from './api/session';
-import setHeaders from './middlewares/rules';
-import Logger from './middlewares/logger';
+
+import { init_sequelize, init_mongoose } from './database';
 
 const app = express();
 
@@ -39,25 +37,7 @@ app.use('/patents', patent);
 app.use('/sessions', session);
 app.use('/users', user);
 
-sequelize
-    .sync()
-    .then(async () => {
-        Logger.info(`mysql(sequelize) url : ${mysqlConfig.url}`);
-        await dbInit();
-    })
-    .catch((error: Error) => {
-        Logger.error('Unable to connect to the database:', error);
-    });
-
-if (process.env.NODE_ENV !== 'test') {
-    mongoose
-        .connect(db.url, {
-            dbName: db.database,
-        })
-        .then(() => {
-            Logger.info(`mongdb(mongoose) url : ${db.url}${db.database}`);
-        })
-        .catch((err: Error) => Logger.error(err));
-}
+init_sequelize();
+init_mongoose();
 
 export default app;
