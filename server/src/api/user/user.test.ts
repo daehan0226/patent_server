@@ -38,8 +38,15 @@ describe('test user endpoints', () => {
             const res = await request(app)
                 .post('/users')
                 .send({ name, password });
-            console.log(res.body);
             expect(res.status).toBe(400);
+        });
+        it('has user role info', async () => {
+            const name = 'test0123';
+            const password = 'aaSS11@@';
+            const res = await request(app)
+                .post('/users')
+                .send({ name, password });
+            expect(res.body).toHaveProperty('roles');
         });
     });
 
@@ -53,10 +60,20 @@ describe('test user endpoints', () => {
             const res = await request(app).get(`/users/${newUser.body.id}`);
             expect(res.status).toBe(200);
         });
+
         it('return 404 for user does not exist', async () => {
             const id = '182398134091';
             const res = await request(app).get(`/users/${id}`);
             expect(res.status).toBe(404);
+        });
+        it('has user role info', async () => {
+            const name = 'test-0333';
+            const password = 'aaSS11@@';
+            const resNewUser = await request(app)
+                .post('/users')
+                .send({ name, password });
+            const res = await request(app).get(`/users/${resNewUser.body.id}`);
+            expect(res.body).toHaveProperty('roles');
         });
     });
 
@@ -102,13 +119,11 @@ describe('test user endpoints', () => {
 
     describe('get user role /users', () => {
         it('has user role data', async () => {
-            const name = 'test-user-role-01';
+            const name = 'test-role-1';
             const password = 'aaSS11@@';
-            const res = await request(app)
-                .post('/users')
-                .send({ name, password });
-            expect(res.status).toBe(201);
-            expect(res.body).toHaveProperty('Roles');
+            await request(app).post('/users').send({ name, password });
+            const res = await request(app).get('/users');
+            expect(res.body[0]).toHaveProperty('roles');
         });
     });
 });
