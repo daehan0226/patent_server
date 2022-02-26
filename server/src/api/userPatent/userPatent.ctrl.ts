@@ -26,7 +26,6 @@ const getAll = async function (
         next(e);
     }
 };
-
 const create = async function (
     req: Request<UserParams, {}, UserPatentRequestInput, {}>,
     res: Response,
@@ -36,12 +35,7 @@ const create = async function (
         const patentId = req.body.patentId;
         const userId = parseInt(req.params._id, 10);
         const session = req.session;
-        if (!session.user) {
-            return res
-                .status(StatusCodes.UNAUTHORIZED)
-                .send({ error: 'Please log in first' });
-        }
-        if (session.user.id == userId) {
+        if (session.user?.id == userId) {
             const result = await UserPatent.create({
                 userId,
                 patentId,
@@ -68,12 +62,7 @@ const deleteById = async function (
         const patentId = req.params.patentId;
         const userId = parseInt(req.params._id, 10);
         const session = req.session;
-        if (!session.user) {
-            return res
-                .status(StatusCodes.UNAUTHORIZED)
-                .send({ error: 'Please log in first' });
-        }
-        if (session.user.id == userId) {
+        if (session.user?.id == userId) {
             const result = await UserPatent.deleteById({
                 userId,
                 patentId,
