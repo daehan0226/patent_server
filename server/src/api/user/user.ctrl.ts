@@ -5,14 +5,18 @@ import * as User from './user.dal';
 import { GetAllUsersFilters, UserInput } from '../../database/mysql/user';
 import { UniqueConstraintError, ValidationError } from 'sequelize';
 
+export interface UserParams {
+    _id: string; // params are always string
+}
+
 const getById = async function (
-    req: Request<{ _id: number }, {}, {}, {}>,
+    req: Request<UserParams, {}, {}, {}>,
     res: Response,
     next: NextFunction
 ) {
     try {
         try {
-            const result = await User.getById(req.params._id);
+            const result = await User.getById(parseInt(req.params._id, 10));
             return res.status(StatusCodes.OK).json(result);
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();
@@ -43,13 +47,16 @@ const getAll = async function (
 };
 
 const update = async function (
-    req: Request<{ _id: number }, {}, UserInput, {}>,
+    req: Request<UserParams, {}, UserInput, {}>,
     res: Response,
     next: NextFunction
 ) {
     try {
         try {
-            const result = await User.update(req.params._id, req.body);
+            const result = await User.update(
+                parseInt(req.params._id, 10),
+                req.body
+            );
             return res.status(StatusCodes.OK).json(result);
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();
@@ -60,14 +67,14 @@ const update = async function (
 };
 
 const deleteById = async function (
-    req: Request<{ _id: number }, {}, {}, {}>,
+    req: Request<UserParams, {}, {}, {}>,
     res: Response,
     next: NextFunction
 ) {
     try {
         try {
-            await User.getById(req.params._id);
-            await User.deleteById(req.params._id);
+            await User.getById(parseInt(req.params._id, 10));
+            await User.deleteById(parseInt(req.params._id, 10));
             return res.status(StatusCodes.NO_CONTENT).send();
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();
