@@ -4,25 +4,25 @@ import User from './user';
 import Role from './role';
 
 export interface UserRoleAttributes {
-    user_id: number;
-    role_id: number;
+    userId: number;
+    roleId: number;
 }
 
 class UserRole extends Model<UserRoleAttributes> implements UserRoleAttributes {
-    public user_id!: number;
-    public role_id!: number;
+    public userId!: number;
+    public roleId!: number;
 }
 
 UserRole.init(
     {
-        user_id: {
-            type: DataTypes.INTEGER,
+        userId: {
+            type: DataTypes.INTEGER.UNSIGNED,
             references: {
                 model: User,
                 key: 'id',
             },
         },
-        role_id: {
+        roleId: {
             type: DataTypes.INTEGER,
             references: {
                 model: Role,
@@ -37,12 +37,12 @@ UserRole.init(
 
 Role.belongsToMany(User, {
     through: UserRole,
-    foreignKey: 'role_id',
+    foreignKey: 'roleId',
     as: 'roles',
 });
 User.belongsToMany(Role, {
     through: UserRole,
-    foreignKey: 'user_id',
+    foreignKey: 'userId',
     as: 'roles',
 });
 
