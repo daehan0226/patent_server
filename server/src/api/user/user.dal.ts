@@ -23,8 +23,8 @@ const create = async (payload: UserInput): Promise<IUser> => {
     });
     if (customerRole) {
         await UserRole.create({
-            user_id: user.id,
-            role_id: customerRole.id,
+            userId: user.id,
+            roleId: customerRole.id,
         });
     }
     return await getById(user.id);
