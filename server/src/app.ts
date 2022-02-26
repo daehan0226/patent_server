@@ -8,6 +8,7 @@ import {
     ISessionUser,
     errorHandler,
     setHeaders,
+    authChecker,
 } from './middlewares';
 
 import patent from './api/patent';
@@ -37,7 +38,7 @@ app.use(errorHandler);
 app.use('/patents', patent);
 app.use('/sessions', session);
 app.use('/users', user);
-app.use('/users/:_id/patents', userPatent);
+app.use('/users/:_id/patents', authChecker, userPatent);
 
 init_sequelize();
 init_mongoose();
