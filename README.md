@@ -10,8 +10,8 @@
 
 ## 파일 구조
 * ./.github/workflows - Github actions
-* ./mongodb - backup,restroe,data volume
-* ./mysql - backup,restroe,data volume
+* ./mongodb - backup,restore,data volume
+* ./mysql - backup,restore,data volume
 * ./proxy - nginx
 * ./server
     * ./src/
@@ -56,7 +56,7 @@
    2. 세션 생성/검증/삭제
   
 ## Features - working on now
-   1. MySQL - 관심 키워드 저장 / 
+   1. 유저 관심 특허 저장
 
 ## Features to add
    1. 검색 기능 다양화 명칭, 요악에서 검색 가능
