@@ -6,7 +6,7 @@ import { GetAllUsersFilters, UserInput } from '../../database/mysql/user';
 import { UniqueConstraintError, ValidationError } from 'sequelize';
 
 export interface UserParams {
-    _id: string; // params are always string
+    userId: string; // params are always string
 }
 
 const getById = async function (
@@ -16,7 +16,7 @@ const getById = async function (
 ) {
     try {
         try {
-            const result = await User.getById(parseInt(req.params._id, 10));
+            const result = await User.getById(parseInt(req.params.userId, 10));
             return res.status(StatusCodes.OK).json(result);
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();
@@ -33,7 +33,6 @@ const getAll = async function (
 ) {
     try {
         try {
-            // check if admin or manger user or return 403
             const name = req.query.name || '';
             const includeDeleted = false; // check if admin with session
             const result = await User.getAll({ includeDeleted, name });
@@ -53,11 +52,8 @@ const update = async function (
 ) {
     try {
         try {
-            const result = await User.update(
-                parseInt(req.params._id, 10),
-                req.body
-            );
-            return res.status(StatusCodes.OK).json(result);
+            await User.update(parseInt(req.params.userId, 10), req.body);
+            return res.status(StatusCodes.NO_CONTENT).send();
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();
         }
@@ -73,8 +69,8 @@ const deleteById = async function (
 ) {
     try {
         try {
-            await User.getById(parseInt(req.params._id, 10));
-            await User.deleteById(parseInt(req.params._id, 10));
+            await User.getById(parseInt(req.params.userId, 10));
+            await User.deleteById(parseInt(req.params.userId, 10));
             return res.status(StatusCodes.NO_CONTENT).send();
         } catch {
             return res.status(StatusCodes.NOT_FOUND).send();

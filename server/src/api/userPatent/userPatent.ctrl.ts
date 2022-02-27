@@ -15,7 +15,7 @@ const getAll = async function (
     next: NextFunction
 ) {
     try {
-        const userId = parseInt(req.params._id, 10);
+        const userId = parseInt(req.params.userId, 10);
         try {
             const result = await UserPatent.getAll(userId);
             return res.status(StatusCodes.OK).json(result);
@@ -33,7 +33,7 @@ const create = async function (
 ) {
     try {
         const patentId = req.body.patentId;
-        const userId = parseInt(req.params._id, 10);
+        const userId = parseInt(req.params.userId, 10);
         const session = req.session;
         if (session.user?.id == userId) {
             const result = await UserPatent.create({
@@ -60,7 +60,7 @@ const deleteById = async function (
 ) {
     try {
         const patentId = req.params.patentId;
-        const userId = parseInt(req.params._id, 10);
+        const userId = parseInt(req.params.userId, 10);
         const session = req.session;
         if (session.user?.id == userId) {
             const result = await UserPatent.deleteById({
