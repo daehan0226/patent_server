@@ -23,7 +23,7 @@ const checkIfManger = (roles: RoleAttributes[]): boolean => {
     return !!roles.find((userRole) => userRole.name === 'manager');
 };
 
-const checkIfMangerOrAdmin = (roles: RoleAttributes[]): boolean => {
+const checkIfManagerOrAdmin = (roles: RoleAttributes[]): boolean => {
     return !!roles.find((userRole) =>
         ['admin', 'manager'].includes(userRole.name)
     );
@@ -53,7 +53,7 @@ const checkRole = (role: Roles) => {
                     checkRoleResult = checkIfOwner(req, user.id);
                     if (!checkRoleResult) {
                         checkRoleResult =
-                            (user.roles && checkIfMangerOrAdmin(user.roles)) ||
+                            (user.roles && checkIfManagerOrAdmin(user.roles)) ||
                             false;
                     }
                     break;
