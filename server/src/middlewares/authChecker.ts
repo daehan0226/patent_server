@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-export default function authChecker(
+export default function checkAuth(
     req: Request,
     res: Response,
     next: NextFunction
