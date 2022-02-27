@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import Role, { RoleOuput } from '../../database/mysql/role';
+import Role, { RoleOutput } from '../../database/mysql/role';
 import User, {
     GetAllUsersFilters,
     UserInput,
@@ -7,7 +7,7 @@ import User, {
 } from '../../database/mysql/user';
 import UserRole from '../../database/mysql/userRole';
 
-interface IUser extends UserOuput, RoleOuput {}
+interface IUser extends UserOuput, RoleOutput {}
 
 const includeUserRole = {
     model: Role,
