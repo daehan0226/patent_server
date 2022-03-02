@@ -6,6 +6,7 @@ import Patent from '../../database/mongo/patent';
 describe('test endpoints after insert dummy patetns', () => {
     beforeAll(async () => {
         await connect();
+        await Patent.createIndexes({ title: 'text', abstract: 'text' });
         await genFakePatents();
     });
 
@@ -69,18 +70,20 @@ describe('test endpoints after insert dummy patetns', () => {
         });
     });
 
-    describe('Get /patents?title', () => {
+    describe('Get /patents?shouldInclude', () => {
         it('return 400 for long string value(over 200)', async () => {
-            const title = Array(201).join('a');
-            const res = await request(app).get(`/patents?title=${title}`);
+            const shouldInclude = Array(201).join('a');
+            const res = await request(app).get(
+                `/patents?shouldInclude=${shouldInclude}`
+            );
             expect(res.status).toBe(400);
         });
     });
 
-    describe('Get /patents?desc', () => {
+    describe('Get /patents?exact', () => {
         it('return 400 for long string value(over 200)', async () => {
-            const desc = Array(201).join('a');
-            const res = await request(app).get(`/patents?desc=${desc}`);
+            const exact = Array(201).join('a');
+            const res = await request(app).get(`/patents?exact=${exact}`);
             expect(res.status).toBe(400);
         });
     });
