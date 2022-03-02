@@ -10,14 +10,16 @@ const defaultPage = 1;
 const defaultGdStartDate = '20210101';
 const defaultGdEndDate = '20211231';
 
-interface Ifilter {
+interface RequestQuery {
     size: string;
     page: string;
     gdStartDate: string;
     gdEndDate: string;
+    mustInclude?: string;
+    shouldInclude?: string;
+    exclude?: string;
+    exact?: string;
 }
-
-interface IGetAllQuery extends Patent.ISearch, Ifilter {}
 
 const getById = async function (
     req: Request<{ _id: string }, {}, {}, {}>,
@@ -39,19 +41,39 @@ const getById = async function (
 };
 
 const getAll = async function (
-    req: Request<{}, {}, {}, IGetAllQuery>,
+    req: Request<{}, {}, {}, RequestQuery>,
     res: Response,
     next: NextFunction
 ) {
     try {
-        const fullSearch = req.query.fullSearch || '';
-        const title = req.query.title || '';
-        const desc = req.query.desc || '';
-        if ([fullSearch, title, desc].some((el) => el.length >= 200)) {
+        const searchKeys = {
+            mustInclude: req.query.mustInclude?.split(',') || [],
+            shouldInclude: req.query.shouldInclude?.split(',') || [],
+            exclude: req.query.exclude?.split(',') || [],
+            exact: req.query.exact?.split(',') || [],
+        };
+
+        const queryTextList = [
+            req.query.mustInclude,
+            req.query.shouldInclude,
+            req.query.exclude,
+            req.query.exact,
+        ];
+        if (queryTextList.some((text) => text && text.length >= 200)) {
             return res.status(StatusCodes.BAD_REQUEST).send({
-                error: `FullSearch, title or desc search query is too long.`,
+                error: `The Query text is too long.`,
             });
         }
+        const dates = {
+            gdStartDate: genDate({
+                strDate: req.query.gdStartDate,
+                defaultDate: defaultGdStartDate,
+            }),
+            gdEndDate: genDate({
+                strDate: req.query.gdEndDate,
+                defaultDate: defaultGdEndDate,
+            }),
+        };
         const size = convertInt({
             value: req.query.size,
             defaultValue: defaultSize,
@@ -60,21 +82,9 @@ const getAll = async function (
             value: req.query.page,
             defaultValue: defaultPage,
         });
-        const gdStartDate = genDate({
-            strDate: req.query.gdStartDate,
-            defaultDate: defaultGdStartDate,
-        });
-        const gdEndDate = genDate({
-            strDate: req.query.gdEndDate,
-            defaultDate: defaultGdEndDate,
-        });
-
         const result = await Patent.getAll({
-            title,
-            desc,
-            fullSearch,
-            gdStartDate,
-            gdEndDate,
+            searchKeys,
+            dates,
             page,
             size,
         });
