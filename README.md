@@ -43,7 +43,7 @@
    3. 랜덤 특허(특허 수, 날짜 파라미터)
    4. 검색 - 명칭, 요약
       1. 길이 제한
-      2. AND/OR 조합 쿼리
+      2. must/should/exact/exclude 조건
 2. DB - 특허 데이터 - MongoDB
    1. Mongoose로 DB 데이터 조작
    2. MongoDB - 특허 문서 인덱스 설정
@@ -54,12 +54,7 @@
 3. DB - 유저, 세션 리소스 - MySQL 
    1. 유저 회원가입
    2. 세션 생성/검증/삭제
-  
-## Features - working on now
-   1. 유저 관심 특허 저장
-
-## Features to add
-   1. 검색 기능 다양화 명칭, 요악에서 검색 가능
+4. 유저 관심 특허 저장
 
 ## Status Codes
 *  https://www.npmjs.com/package/http-status-codes

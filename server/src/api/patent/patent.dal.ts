@@ -1,20 +1,25 @@
 import Patent from '../../database/mongo/patent';
 import redisClient from '../../services/redis_store';
 
-export interface ISearch {
-    title: string;
-    desc: string;
-    fullSearch: string;
+interface ISearch {
+    mustInclude: string[];
+    shouldInclude: string[];
+    exclude: string[];
+    exact: string[];
 }
 
 interface Ifilter {
     size: number;
     page: number;
-    gdStartDate: Date;
-    gdEndDate: Date;
+    dates: {
+        gdStartDate: Date;
+        gdEndDate: Date;
+    };
 }
 
-export interface IGetAllQuery extends ISearch, Ifilter {}
+interface IGetAllQuery extends Ifilter {
+    searchKeys: ISearch;
+}
 
 const getById = async function (id: string) {
     const result = await Patent.findById(id);
@@ -24,36 +29,80 @@ const getById = async function (id: string) {
     throw new Error('not found');
 };
 
+const joinTextElements = (
+    textArray: string[],
+    beforeEle: string,
+    afterEle: string
+): string | null => {
+    let result = '';
+
+    textArray.forEach(function (text, i) {
+        if (i === 0) {
+            result = `${beforeEle}${text}${afterEle}`;
+        } else {
+            result = `${result} ${beforeEle}${text}${afterEle}`;
+        }
+    });
+
+    return result;
+};
+
+const genTextQuery = (searchKeys: any) => {
+    let keywords = [];
+    if (searchKeys.mustInclude.length) {
+        keywords.push(joinTextElements(searchKeys.mustInclude, '"', '"'));
+    }
+    if (searchKeys.shouldInclude.length) {
+        keywords.push(joinTextElements(searchKeys.shouldInclude, '', ''));
+    }
+    if (searchKeys.exact.length) {
+        //eslint-disable-next-line
+        keywords.push(joinTextElements(searchKeys.exact, '"', '"'));
+    }
+    if (searchKeys.exclude.length) {
+        keywords.push(joinTextElements(searchKeys.exclude, '-', ''));
+    }
+    if (keywords.length) {
+        return { $search: keywords.join(' ') };
+    }
+    return null;
+};
+
 const getAll = async function ({
-    gdStartDate,
-    gdEndDate,
-    title,
-    desc,
-    fullSearch,
+    searchKeys,
+    dates,
     page,
     size,
 }: IGetAllQuery) {
     const query: {
-        $title?: string;
-        $abstract?: string;
-        $text?: { $search: string };
+        $text?: any;
         patent_date: { $gte: Date; $lt: Date };
     } = {
         patent_date: {
-            $gte: gdStartDate,
-            $lt: gdEndDate,
+            $gte: dates.gdStartDate,
+            $lt: dates.gdEndDate,
         },
     };
-    if (title) query['$title'] = title;
-    if (desc) query['$abstract'] = desc;
-    if (fullSearch) query['$text'] = { $search: fullSearch };
+
+    let count;
+    let patents;
+
     const skipNumber = page > 0 ? (page - 1) * size : 0;
-    const count = await Patent.find(query).countDocuments();
-    const patents = await Patent.find(query)
-        .skip(skipNumber)
-        .limit(size)
-        .exec();
-    return { patents, count, title, desc, fullSearch, gdStartDate, gdEndDate };
+    const textQuery = genTextQuery(searchKeys);
+    if (textQuery) {
+        query['$text'] = textQuery;
+        count = await Patent.find(query).countDocuments();
+        patents = await Patent.find(query, { score: { $meta: 'textScore' } })
+            .sort({ score: { $meta: 'textScore' } })
+            .skip(skipNumber)
+            .limit(size)
+            .exec();
+    } else {
+        count = await Patent.find(query).countDocuments();
+        patents = await Patent.find(query).skip(skipNumber).limit(size).exec();
+    }
+
+    return { patents, count, size, ...searchKeys, ...dates };
 };
 
 const getTotalCountFromRedis = async (): Promise<number> => {
